@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research - Nick Drachman</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Load MathJax from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                displayMath: [['$$','$$'], ['\\[','\\]']],
+                processEscapes: true
+            }
+        });
+    </script>
+</head>
+<body>
+    <header class="header">
+        <span class="header-name">Nick Drachman</span>
+        <nav class="nav-menu">
+            <a href="index.html">About Me</a>
+            <a href="research.html">Research</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="content">
+
+        <div class="research-container">
+            <h1>Research</h1>
+            <div class="research-grid">
+                <div class="research-item" data-target="nanopore-ion-source">
+                    <img src="images/ionSource1.jpg" alt="Nanopore Ion Source" class="research-image">
+                    <h2>Nanopore ion sources for mass spectrometry</h2>
+                </div>
+                <div class="research-item" data-target="flow-metrology">
+                    <img src="images/flowMeter1.jpg" alt="Flow Metrology" class="research-image">
+                    <h2>Microfluidic flow metrology</h2>
+                </div>
+                <div class="research-item" data-target="mri-techniques">
+                    <img src="images/MRI1.jpg" alt="MRI Techniques" class="research-image">
+                    <h2>Hyperpolarized MRI techniques</h2>
+                </div>
+            </div>
+        </div>
+
+        <div id="nanopore-ion-source" class="research-content">
+            <h2>Nanopore Ion Sources for Mass Spectrometry</h2>
+
+            <h3>Background:</h3>
+            <p>Mass spectrometry is a powerful analytical technique used to identify and quantify molecules in complex mixtures. It's crucial in fields like proteomics, where scientists study the structure and function of proteins. However, current mass spectrometry methods face limitations in sensitivity and efficiency, especially when dealing with very small samples or when trying to analyze individual molecules.</p>
+            
+            <p>The most common method for introducing biological molecules into a mass spectrometer is electrospray ionization (ESI). ESI has proved to be tremendously useful, winning John Fenn the nobel prize in chemistry in 2002, but it has limitations. ESI is very lossy - typically <a href="https://link.springer.com/article/10.1016/j.jasms.2005.06.011"a>only about 1%</a> of the sample ions are transferred into the mass spectrometer and detected. This loss is fundamentally linked to the use of a background gas to stimulate the generation of ions from electrosprayed droplets. The inefficiency of ESI limits our ability to study the protein content of very small samples, such as single cells. </p>
+            
+            <p>My research during my PhD centered around the development and characterization of the nanopore ion source, a new kind of ion source that overcomes this limitation by emiting ions directly into high vacuum from a nanoscale aqueous meniscus. The ion source consists of a tapered glass capillary with a tip opening less than 100 nm in diameter, placed directly into the high vacuum of a mass spectrometer. The ion source's nanoscale size enables very high electric fields to form at its tip while also limiting flow of fluid through the source, thus preventing the emission of charged droplets while stimulating the direct emission of ions by ion evaporation.</p>
+
+                <div class="research-image-container">
+                    <img src="images/ionSource3.png" class="research-content-image nanopore-comparison-image" alt="Comparison of ESI source with nanopore ion source">
+                    <p class="image-caption">Figure 1: Comparison of a conventional ESI ion source with a nanopore ion source.</p>
+                </div>
+
+            <h3>Key Findings:</h3>
+            <ul>
+                <li>We've developed a nanopore ion source that can emit ions directly from a liquid sample into a vacuum.</li>
+                <li>The nanopore ion source achieves over 90% ion transmission efficiency, a dramatic improvement over ESI's typical 1% efficiency.</li>
+                <li>Our source can generate mass spectra of various biomolecules such as amino acids and small peptides.</li>
+                <li>Multiple lines of evidence support the conclusion that the nanopore ion source operates by a different mechanism than ESI, directly <a href="https://pubs.aip.org/aip/jcp/article-abstract/64/6/2287/85797/On-the-evaporation-of-small-ions-from-charged"a>evaporating ions</a> rather than generating charged droplets. This difference explains its higher efficiency and unique capabilities.</li>
+            </ul>
+
+                 <p>Figure 2 below illustrates the basic physics governing ion emission from the nanopore ion source. An ion inside the liquid faces an energy barrier that it needs to overcome in order to evaporate, shown in Figure 2a. The height of that barrier is determined by the solvation energy, $G_0$, as well as the electric field strength, which reduces the solvation barrier by an amount $\Delta G(E)$, with contributions from both electrical repulsion by the charged meniscus and image charge attraction. If the electric field is strong enough to overcome surface tension (i.e. the field is greater than the Rayleigh limit), the meniscus will become unstable and charged droplet emission may occur. Figure 2b plots the electric field needed to reach the Rayleigh limit as a function of the ion source tip radius, as well as the approximate electric field needed to reduce the height of the barrier to $\sim k_BT$ and extract ions by ion evaporation. For sufficiently small ion sources, the electric field strength needed to extract ions is less than the field strength needed to extract charged droplets.</p>
+
+
+
+                <div class="research-image-container">
+                    <img src="images/ionSource4.png" alt="Envisioned approach to single molecule protein sequencing" class="research-content-image">
+                    <p class="image-caption">Figure 2: (a) Diagram of the potential energy landscape for an ion evaporating from the liquid meniscus at the tip of the nanopore ion source. (b) Plot of the approximate limiting electric fields for ion evaporation and droplet generation (the Rayleigh limit). The region where ion evaporation should dominate is highlighted in green.</p>
+                </div>
+
+            <h3>Potential Applications:</h3>
+            <ul>
+                <li>Single-cell proteomics: The high sensitivity of our ion source could allow scientists to analyze the protein content of individual cells, providing new insights into cell-to-cell variations in health and disease.</li>
+                <li>Single molecule protein sequencing: The nanopore ion source's ability to emit amino acid ions directly into vacuum with near 100% efficiency may pave the way for an envisioned single molecule sequencing approach illustrated in Figure 3 below. Single molecule protein sequencing is the final fronteir of proteomics, pushing detection limits to their theoretical minimum.
+                <li>Improved pharmaceutical analysis: The high efficiency and sensitivity of the nanopore ion source could enhance drug discovery and quality control processes in the pharmaceutical industry.</li>
+                <li>Advancements in other fields: Our findings could have implications beyond biology, potentially improving technologies like electrospray propulsion for spacecraft and atom probe tomography for materials science.</li>
+            </ul>
+
+
+
+                <div class="research-image-container">
+                    <img src="images/sequencing.png" alt="Envisioned approach to single molecule protein sequencing" class="research-content-image nanopore-comparison-image">
+                    <p class="image-caption">Figure 3: Illustration of our envisioned approach to single molecule protein sequencing using the nanopore ion source.</p>
+                </div>
+
+
+            <!-- <p>This research represents a significant step forward in mass spectrometry technology. By dramatically improving the efficiency and sensitivity of ion sources, we're opening doors to new types of experiments and analyses that were previously impossible, with potential impacts across a wide range of scientific and industrial applications.</p> -->
+
+            <p>For more information on this project, see the following papers:</p>
+            <ul>
+                <li><a href="https://www.nature.com/articles/s41467-024-51455-x">Nanopore ion sources deliver individual ions of amino acids and peptides directly into high vacuum</a> by Drachman et al.</li>
+                <li><a href="https://www.nature.com/articles/s41592-021-01143-1">The emerging landscape of single molecule protein sequencing technologies</a> by Alfaro et al.</li>
+            </ul>
+
+        </div>
+
+
+        
+        <div id="flow-metrology" class="research-content">
+            <h2>Microfluidic Flow Metrology</h2>
+
+            <h3>Background:</h3>
+            <p>Accurate measurement and control of extremely small fluid flows are crucial in many scientific and industrial applications, from drug delivery systems to advanced analytical chemistry techniques. However, as we move to smaller scales, traditional flow measurement methods become increasingly inaccurate or impractical.</p>
+            
+            <p>I worked with <a href="https://www.nist.gov/people/gregory-cooksey">Greg Cooksey</a> at the National Institute of Standards and Technology (NIST) on developing and characterizing an innovative optofluidic flow meter capable of measuring ultra-low flow rates, down to nanoliters per minute. This device addresses a critical need in various fields, including high-performance liquid chromatography, drug perfusion, and lab-on-a-chip applications.</p>
+            
+            <p>The optofluidic flow meter works on a principle of fluorescence photobleaching. It uses a laser to excite fluorescent dye molecules in a narrow channel. As the fluid flows through this channel, the dye molecules are exposed to the laser light. At slower flow rates, the dye molecules spend more time in the laser's path and thus have a higher probability of photobleaching, reducing the overall fluorescence. By measuring this reduction in fluorescence, we can accurately determine the flow rate.</p>
+                
+                <div class="research-image-container">
+                    <img src="images/flowMeter2.png" alt="Diagram of the optofluidic flow meter" class="research-content-image">
+                    <p class="image-caption">Figure 1: (a) Image of the measurement region in the optofluidic flow meter. (b) Microscope image of the emitted fluorescence from the measurement region at different flow rates.</p>
+                </div>
+
+
+            <h3>Key Findings:</h3>
+            <ul>
+                <li>We developed an optofluidic flow meter capable of measuring flows as low as 1 nanoliter per minute with less than 5% uncertainty, a significant improvement over existing methods.</li>
+                <li>Our research revealed the dynamic behavior of the flow meter across a wide range of flow rates (1-500 nL/min) and laser powers, providing insights into its operation and limitations.</li>
+                <li>We created and validated a theoretical model explaining the interplay between photobleaching rate and fluorophore transit time through the optical interrogation region. This model provides a deeper understanding of the device's physics.</li>
+                <li>A novel scaling relationship was discovered that relates relaxation times at different flow rates and optical irradiances. This relationship allows for more efficient calibration and extends the device's measurement capabilities.</li>
+                <li>We demonstrated the flow meter's ability to make dynamic measurements with unprecedented accuracy at the nanoliter-per-minute scale, achieving relaxation times on the order of 100 milliseconds for 1 nL/min flows.</li>
+            </ul>
+
+
+            <h3>Potential Applications:</h3>
+            <ul>
+                <li>Neonatal care: Improved accuracy in drug delivery systems and infusion therapies for newborns, where precise control of minute fluid volumes is critical.</li>
+                <li>Advanced analytical chemistry: Enhanced performance in high-pressure liquid chromatography (HPLC) systems, allowing for better control of short pump cycles and more precise separations.</li>
+                <li>Mass spectrometry: More precise flow control in nanoelectrospray ionization (nanoESI) systems, potentially improving the reliability and reproducibility of mass spectrometry results.</li>
+                <li>Microfluidic devices: Real-time monitoring of flow fluctuations in lab-on-a-chip technologies, enabling more sophisticated and controlled experiments.</li>
+                <li>Industrial processes: Improved quality control in manufacturing processes that involve precise fluid handling, such as in the pharmaceutical or semiconductor industries.</li>
+            </ul>
+
+            <p>This research represents a significant advancement in ultra-low flow metrology, offering new possibilities for precise control and measurement in microfluidic systems. The improved understanding of flow dynamics at this scale paves the way for more accurate and responsive microfluidic devices across a wide range of scientific and industrial applications.</p>
+
+            <p>For more information on this project, see the following papers:</p>
+            <ul>
+                <li><a href="https://pubs.aip.org/aip/pof/article/36/2/022029/3267902">Relaxation times and dynamic behavior of an optofluidic flow meter in the nanoliter per minute regime</a> by Drachman et al.</li>
+                <li><a href="https://doi.org/10.1021/acs.analchem.9b02056">Dynamic Measurement of Nanoflows: Realization of an Optofluidic Flow Meter to the Nanoliter-per- Minute Scale</a> by Cooksey et al.</li>
+                <li><a href="https://doi.org/10.1103/PhysRevApplied.11.034025">Dynamic Measurement of Nanoflows: Analysis and Theory of an Optofluidic Flowmeter</a> by Patrone et al.</li>
+                <li><a href="https://doi.org/10.1117/1.JBO.27.1.017001">Optofluidic flow meter for sub-nanoliter per minute flow measurements</a> by Sadeghi et al.</li>
+            </ul>  
+
+        </div>
+        
+        <div id="mri-techniques" class="research-content">
+            <h2>Hyperpolarized MRI techniques</h2>
+
+            <h3>Background:</h3>
+            <p>Magnetic Resonance Imaging (MRI) is a powerful diagnostic tool, but it suffers from inherently low sensitivity when trying to detect certain nuclei like carbon-13 (<sup>13</sup>C). This limitation can be overcome through a technique called hyperpolarization - specifically Dynamic Nuclear Polarization (DNP) - which can increase the MRI signal by over 10,000-fold. This massive signal enhancement allows us to not only image different molecules containing <sup>13</sup>C, but also to track their chemical transformations in real time.</p>
+            
+            <p>My research focuses on developing and optimizing hyperpolarized MRI techniques for two main applications: studying chemical reaction mechanisms and measuring tissue pH. By using DNP to dramatically boost the MRI signal, we can observe chemical species that would normally be too short-lived or too dilute to detect.</p>
+
+            <h3>pH Mapping of Injured Lungs:</h3>
+            <p>Many lung diseases and injuries are associated with changes in tissue pH, but measuring pH inside the lungs has traditionally been very difficult. We developed a technique to map pH throughout the lungs using hyperpolarized bicarbonate MRI.</p>
+            
+            <p>The key challenge was finding a safe and efficient way to generate the hyperpolarized bicarbonate needed for pH imaging. We discovered that by using base catalysis to decompose hyperpolarized pyruvate, we could produce highly polarized bicarbonate without requiring toxic compounds like cesium or calcium that were used in previous methods.</p>
+
+            <div class="research-image-container">
+                <img src="images/MRI1.jpg" alt="pH map of rat heart and lungs" class="research-content-image nanopore-comparison-image">
+                <p class="image-caption">Figure 1: pH map overlaid on an anatomical MRI image showing the difference in pH between injured lung tissue and heart tissue.</p>
+            </div>
+
+            <h3>Key Findings:</h3>
+            <ul>
+                <li>We obtained the first <i>in vivo</i> pH maps of lungs using a rat model, demonstrating clear differences between healthy and injured tissue</li>
+                <li>Achieved bicarbonate polarizations up to 17.2% using base-catalyzed decarboxylation of pyruvate</li>
+                <li>Measured a consistent pH difference of 0.14 between heart tissue (pH 7.18) and injured lung tissue (pH 7.04)</li>
+                <li>In selectively injured lungs, we found the injured tissue was more acidic (pH 6.94) than both the healthy tissue (pH 7.14) and heart (pH 7.20)</li>
+            </ul>
+
+            <h3>Chemical Reaction Mechanisms:</h3>
+            <p>In a related project, we demonstrated how hyperpolarized <sup>13</sup>C NMR could be used to study rapid chemical reactions that are difficult to observe with conventional techniques. Specifically, we investigated the mechanism by which pyruvate decomposes in the presence of hydrogen peroxide to form bicarbonate, identifying a previously unknown intermediate compound. The full reaction scheme is shown in Figure 2a, and an NMR spectrum captured at approximately the halfway point of the reaction is shown in Figure 2b.</p>
+
+            <div class="research-image-container">
+                <img src="images/13CNMR.png" alt="Reaction mechanism diagram" class="research-content-image">
+                <p class="image-caption">Figure 2: (a) Reaction scheme showing the non-enzymatic decarboxylation of pyruvate by hydrogen peroxide, including the newly discovered peroxymonocarbonate side reaction. (b) NMR spectrum of the decarboxylation of [1-13C]-pyruvate via H<sub>2</sub>O<sub>2</sub>, showing all of the products and intermediate states of the reaction.</p>
+            </div>
+
+            <h3>Key Findings:</h3>
+            <ul>
+                <li>First direct observation at room temperature of a previously proposed reaction intermediate (2-hydroperoxy-2-hydroxypropanoate)</li>
+                <li>Discovery and characterization of a previously unidentified side reaction producing peroxymonocarbonate</li>
+                <li>Development of a complete kinetic model that could determine multiple reaction rates spanning several orders of magnitude</li>
+                <li>Demonstration that hyperpolarized <sup>13</sup>C-NMR can be used as a powerful tool to uncover previously unseen organic reaction pathways.</li>
+            </ul>
+
+            <p>The combination of these studies demonstrates the broad utility of hyperpolarized MRI techniques - from basic chemical research to potentially clinically relevant diagnostic imaging. The ability to track both chemical reactions and physiological parameters like pH in real time opens up new possibilities for both chemical research and medical diagnosis.</p>
+
+            <p>For more information on this project, see the following papers:</p>
+            <ul>
+                <li><a href="https://onlinelibrary.wiley.com/doi/10.1002/mrm.26473">In vivo pH mapping of injured lungs using hyperpolarized [1-<sup>13</sup>C]pyruvate</a> by Drachman et al.</li>
+                <li><a href="https://pubs.rsc.org/en/content/articlelanding/2017/cp/c7cp02041d">Quantifying reaction kinetics of the non-enzymatic decarboxylation of pyruvate and production of peroxymonocarbonate with hyperpolarized 13C-NMR</a> by Drachman et al.</li>
+            </ul>
+        </div>
+
+
+
+    </main>
+    <script src="research.js"></script>
+</body>
+</html>

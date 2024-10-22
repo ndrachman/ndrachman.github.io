@@ -1,0 +1,246 @@
+/* Global Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.content {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+/* Home page style */
+.home-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.home-content .profile-header {
+    justify-content: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.home-content #about,
+.home-content #links {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.home-content #bottom-image {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.home-content #skate-image {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Header and Navigation */
+.header {
+    background-color: #f8f8f8;
+    padding: 10px 20px;
+    overflow: hidden;
+}
+
+.header-name {
+    float: left;
+    padding: 10px 15px;
+    font-weight: regular;
+    color: #333;
+}
+
+.nav-menu {
+    float: right;
+}
+
+.nav-menu a {
+    color: #333;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: inline-block;
+}
+
+.nav-menu a:hover {
+    background-color: #ddd;
+}
+
+/* Profile Section */
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#profile-picture {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.profile-header h1 {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profile-header .first-name,
+.profile-header .last-name {
+    display: block;
+    font-size: 1.25em;
+    line-height: 1;
+}
+
+.profile-header .first-name {
+    margin-bottom: 10px;
+}
+
+#bottom-image {
+    margin-top: 80px;
+}
+
+#skate-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* Contact Page */
+.contact-info {
+    margin-top: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.contact-info p {
+    margin-bottom: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+
+
+
+
+/* Research page styles */
+.research-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* Center align the Research header */
+.research-container h1 {
+    text-align: center;
+    margin-bottom: 30px; /* Add some space below the header */
+}
+
+/* Ensure this doesn't affect other pages */
+.home-content h1 {
+    text-align: left; /* Keep other h1 elements left-aligned if needed */
+}
+
+.research-grid {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px; /* Reduced gap for more space for images */
+    margin-bottom: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.research-item {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.research-image {
+    width: 100%;
+    height: 300px; /* Fixed height for consistency */
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.research-item:hover .research-image {
+    transform: scale(1.025);
+}
+
+/* Content styles */
+.content {
+    padding: 20px 0; /* Remove horizontal padding */
+    max-width: 100%; /* Allow full width for research grid */
+    margin: 0 auto;
+}
+
+.research-content {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    max-width: 1000px; /* Maintain original content width */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.research-content.active {
+    display: block;
+}
+
+
+.research-image-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.research-content-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.image-caption {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}
+
+.nanopore-comparison-image {
+    max-width: 60%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}*/
