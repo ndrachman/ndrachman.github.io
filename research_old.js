@@ -18,14 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (content.id === targetId) {
                         content.classList.toggle('active');
                         console.log('Toggled active class for:', targetId);
-                        
-                        // Add smooth scrolling after content is shown
-                        setTimeout(() => {
-                            targetContent.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }, 100); // Small delay to ensure content is rendered
                     } else {
                         content.classList.remove('active');
                     }
