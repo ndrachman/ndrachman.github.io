@@ -243,4 +243,167 @@ ul {
     display: block;
     margin-left: auto;
     margin-right: auto;
-}*/
+}
+
+
+
+/* Blog page styles */
+.blog-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.blog-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 20px;
+}
+
+.blog-item {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.blog-item:hover {
+    transform: translateY(-5px);
+}
+
+.blog-item a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.blog-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.blog-preview {
+    padding: 15px;
+}
+
+.blog-preview h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.blog-date {
+    color: #666;
+    font-size: 0.9em;
+    margin: 0 0 10px 0;
+}
+
+.blog-excerpt {
+    color: #444;
+    margin: 0;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .blog-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 10px;
+    }
+}
+
+
+/* Blog post content styles */
+.equation {
+    text-align: center;
+    margin: 20px 0;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.post-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.media-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* Changed from 2fr to 1.5fr */
+    gap: 30px;
+    margin: 20px 0;
+    align-items: center;
+    width: 100%;
+}
+
+.media-content .post-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin: 0; /* Override the default post-image margins */
+}
+
+.media-content p {
+    margin: 0;
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+
+/* Blog post content width fix */
+.blog-post {
+    max-width: 850px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+/* Override the general content max-width for blog posts */
+.content .blog-post {
+    max-width: 850px;
+}
+
+/* Fractal gallery styling */
+.fractal-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.fractal-gallery figure {
+    margin: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;  /* Make all figures same height */
+}
+
+.fractal-gallery .post-image {
+    width: 100%;
+    height: 300px;  /* Set fixed height or adjust as needed */
+    object-fit: contain;  /* This preserves aspect ratio */
+    margin: 0;
+}
+
+.fractal-gallery figcaption {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+    margin-top: auto;  /* Push caption to bottom */
+}
