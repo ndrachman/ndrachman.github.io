@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractals in the Complex Plane - Nick Drachman</title>
+    <link rel="stylesheet" href="../styles.css">
+       <!-- Load MathJax from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                displayMath: [['$$','$$'], ['\\[','\\]']],
+                processEscapes: true
+            }
+        });
+    </script>
+</head>
+<body>
+    <header class="header">
+        <span class="header-name">Nick Drachman</span>
+        <nav class="nav-menu">
+            <a href="../index.html">About Me</a>
+            <a href="../research.html">Research</a>
+            <a href="../blog.html">Blog</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="blog-post">
+            <div class="post-header">
+                <h1>Eternity, According to Randy</h1>
+                <p class="post-date">November 3, 2019</p>
+            </div>
+
+            <div class="post-content">
+                <p>One of my favorite songs is Randy Described Eternity by Built to Spill. The lyrics describe the lead singer's experience of being in a church youth group and having the youth pastor, Randy, explain the concept of eternity, presumably to scare the group about the possibility of spending an eternity in hell. The lyrics go like this:</p>
+
+                <p><em>Every thousand years<br>This metal sphere<br>Ten times the size of Jupiter<br>Floats just a few yards past the earth<br>You climb on your roof<br>And take a swipe at it<br>With a single feather<br>Hit it once every thousand years<br>'Til you've worn it down<br>To the size of a pea<br>Yeah, I'd say that's a long time<br>But it's only half a blink<br>In the place you're gonna be</em></p>
+
+                <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/kpVrSkZM6DE?si=aSM4XFHcCPWI1mxK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+
+                <p>So using that description, lets see if we can calculate just how long eternity is, according to Randy. We'll need to use a bit of physics here just to figure out how much the size of the sphere is reduced with each swipe of the feather, the rest is straightforward arithmetic. </p>
+
+                <h2>Approach to the Problem</h2>
+
+                <p>Lets assume that the metal sphere described in the song is made of iron. What we need to do is figure out the amount of energy needed to remove an iron atom from an iron lattice, then see how much energy is imparted to the metal by the swiping of the feather, then we can determine how much iron can be removed by each swipe. If we calculate how many atoms are in the sphere, we will then know how many swipes it takes to remove all of the atoms. Then we just multiply this number by 1,000 years, and we'll have an estimate for how long eternity is! </p>
+
+                <h3>Energy Needed to Remove all of the Iron Atoms</h3>
+
+                <p>When you have atoms in a crystal lattice, like you do with metallic iron, it takes energy to remove an atom from that lattice, since you need to break all of the bonds between that atom and its neighbors. You could probably use <a href="https://en.wikipedia.org/wiki/Density_functional_theory">density functional theory</a> to meticulously calculate the height of this energy barrier, but we can just use the short cut of thermodynamics! Iron has a <a href="https://www.webelements.com/iron/thermochemistry.html">heat of atomization of 415 kJ/mol</a>, which means it takes about $7 \times 10^{-19}$ joules to remove a single iron atom from its lattice.</p>
+
+                <p>This seems like a tiny amount of energy, but it's actually quite a lot at the atomic scale. And that's the energy for just a single atom, we need to multiply this energy by the total number of atoms in the sphere, which is <em>A LOT.</em> Lets assume that when the lyrics say "10 times the size of Jupiter", size is referring to the volume rather than to the radius or cross-sectional area. The volume of Jupiter is $1.43 \times 10^{24}$ cubic meters, so the sphere described in the song has a volume of $1.43 \times 10^{25}$ cubic meters. Iron has a density of 7.874 g/cm<sup>3</sup> and an atomic mass of $9.3 \times 10^{-23}$ g. We can now figure out how many iron atoms are in the sphere, first calculating the mass of the sphere ($m_s$) by multiplying the density ($\rho$) by the volume ($V$), then dividing by the atomic mass of iron ($m_{atom}$):</p>
+
+                <center><p># of atoms $=\frac{m_s}{m_{atom}} = \frac{\rho V}{m_{atom}}$</p>
+
+                <p># of atoms $ = \frac{7.874\times 10^6 \text{ g/m}^3 \cdot 1.43\times10^{24} \text{m}^3}{9.273\times10^{-23} \text{g}}$</p>
+
+                <p># of atoms $ = 1.2\times 10^{53}$</p>
+
+                </center>
+
+                <h3>The Energy Imparted by a  Feather Swipe</h3>
+
+                <p>Now lets think about how much energy is imparted by the feather with each swipe. My approach here will be to think about the heat generated by the friction between the feather and the metal. I'll also need to make the enormously simplifying (and obviously not entirely valid) assumption that all of that heat goes towards atomizing iron atoms and doesn't get conducted through the lattice. Lets draw a simple force diagram to think about the situation more clearly:</p>
+
+                <img src="Randy/force-diagram.webp" alt="calculation" class="post-image">
+                <p class="image-caption">Force diagram showing the feather (red) being swiped across the surface of a large metal sphere (black). F<sub>A</sub> is the applied force, F<sub>N</sub> is the normal force, and F<sub>F</sub> is the force of friction.</p>
+
+
+                <p>What we'd like to find is the force of friction, <em>F<sub>F</sub></em>, which we can then integrate over some distance, <em>d</em>, to find the energy imparted by the swiping feather. <em>F<sub>F</sub></em> depends on <em>F<sub>N</sub></em> according to $F_F = \mu F_N$, where $\mu$ is the coefficient of friction between feather and iron. I tried to find a value for $\mu$ by searching online, but couldn't find it, so we'll just assume $\mu \approx 0.3$, which is similar to the <a href="https://www.engineeringtoolbox.com/friction-coefficients-d_778.html">coefficients between other organic materials and metals</a>. </p>
+
+                <p>So now we still need to know what <em>F<sub>N</sub></em> is. We can estimate it by figuring out how much force it would take to bend a feather by about 90 degrees as is shown in the diagram. For a first order-of-magnitude estimate, lets just think intuitively about how much weight we think a feather could support before bending significantly. If we imagine balancing a paperclip on the tip of a feather, it seems like it should definitely be able to support that weight. It could probably support 10 paperclips quite easily as well. But I imagine that if we tried to balance 100 paperclips on the tip of a feather, it would probably start to bend quite a bit. If we assume a paperclip weighs about 1 gram, the weight of 100 paperclips would apply around 1 newton of force. </p>
+
+                <p>We can be a bit more precise if we know <a href="https://en.wikipedia.org/wiki/Young%27s_modulus">Young's modulus</a> for a feather, which characterizes how much a given material will stretch under an applied force. Luckily some experimental biologists have already done the difficult job of measuring this parameter in their paper <strong><a href="https://jeb.biologists.org/content/215/3/405">Flexural stiffness of feather shafts: geometry rules over material properties</a></strong>. They found that Young's modulus for barn owl feathers is about $5\times 10^6$ pascals. The definition of Young's modulus (<em>E</em>) is:</p>
+
+                <center><p>$E = \frac{F}{A}\frac{L_0}{\Delta L}$</p></center>
+
+                <p>where <em>A</em> is the cross sectional area, <em>L<sub>0</sub> </em>is the unstretched length, and <em>ΔL</em> is the change in length when stretched. If we know the width and length of the feather, as well as the angle it is bent by (90°), we can calculate <em>ΔL</em> and solve for the applied force, <em>F</em>, needed to achieve this bending. Here's what that calculation looked like: </p>
+
+                <img src="Randy/img_2599-copy.webp" alt="calculation" class="post-image">
+
+                <p>So we see that it takes about half of a newton to bend a feather by 90°, and so we'll say that the normal force, <em>F<sub>N</sub></em>, is 0.5 N, very close to our initial estimate of 1 N! </p>
+
+                <p>Now we can use this to find the force of friction from $F_F = \mu F_N$, and find that <strong><em>F<sub>F</sub></em> = 0.15 N</strong>, after plugging in 0.3 for μ. Now we just integrate this over the length of the swipe to get the energy, using the definition of work for a constant force acting along a straight path of length <em>d</em>:</p>
+
+                <center><p>$W = \int F(x) dx = F d$</p></center>
+
+                <p>Lets assume that the feather is swiped across half a meter of the sphere's surface, then the work done by the feather is $0.15 \text{ N} \times 0.5 \text{ m} = 0.075 \text{ J}$. </p>
+
+                <h3>So How Long is an Eternity?</h3>
+
+                <p>We have calculated that each time a feather is swiped on the surface of an iron sphere, it imparts about 0.075 joules of energy. We've also calculated that it would take about $8.3 \times 10^{34}$ joules to remove all the iron atoms from a an iron sphere that is 10x the size of jupiter. Now we just need to do some simple arithmetic to figure out how long this would take. The total number of swipes we would need to make is:</p>
+
+                <center><p>$\frac{8.3 \times 10^{34} \text{ J}}{0.075 \text{ J}} = 1.1 \times 10^{36} \text{ swipes}$</p></center>
+
+                <p>If the swipes happen once every 1000 years, then it would take $1.1 \times 10^{39}$ years to wear down the sphere to the size of a pea, an absurdly long time.</p>
+
+                <p>But we're not done yet! The last two lines of the first verse say "But it's only half a blink in the place you're gonna be." Which seems to imply that this huge length of time is to eternity as half a blink is to a human lifetime. <a href="https://sciencing.com/fast-blink-eye-5199669.html">A blink lasts about a tenth of a second</a>, so half a blink would be 0.05 seconds. The average human life expectancy is about <a href="https://data.worldbank.org/indicator/SP.DYN.LE00.IN">72 years</a>, or about <a href="https://www.wolframalpha.com/input/?i=72*365*24*60*60%2F0.05">45 billion half-blinks</a>. So we should multiply the number of years we calculated above by 45 billion, giving us a final answer of:</p>
+
+                <center><p>$(1.1 \times 10^{39})  \times (4.5 \times 10^{10}) = 5 \times 10^{49} \text{ years}$</p></center>
+
+                <p>So there we have it, according to Randy, eternity lasts about $5 \times 10^{49}$ years. </p>
+
+                <h3>Was Randy Right?</h3>
+
+                <p>Well, no. If we wanna be literal about it, eternity means an infinite number of years, and $10^{50}$ is just as far from infinity as 0 is. But modern cosmology tells us that the universe won't actually last infinitely long, the universe will most likely undergo a process called <a href="https://en.wikipedia.org/wiki/Heat_death_of_the_universe">heat death</a>. Eventually, all of the stars will use up their fuel, and the only thing left in the universe will be black holes. These black holes will not have anything left to suck up, so they will slowly evaporate due to <a href="https://en.wikipedia.org/wiki/Hawking_radiation">Hawking radiation</a>. Once the last black holes have evaporated, there will be nothing left in the universe except extremely low energy light. For all intents and purposes, <a href="https://en.wikipedia.org/wiki/Arrow_of_time#Thermodynamic_arrow_of_time">time will stop</a>, as the universe will have reached it's maximum entropy state. It's estimated that this will take about $10^{100}$ years, so even with this more conservative estimate, Randy was still pretty far off. <br></p>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
