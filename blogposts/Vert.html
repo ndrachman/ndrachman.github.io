@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractals in the Complex Plane - Nick Drachman</title>
+    <link rel="stylesheet" href="../styles.css">
+       <!-- Load MathJax from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                displayMath: [['$$','$$'], ['\\[','\\]']],
+                processEscapes: true
+            }
+        });
+    </script>
+</head>
+<body>
+    <header class="header">
+        <span class="header-name">Nick Drachman</span>
+        <nav class="nav-menu">
+            <a href="../index.html">About Me</a>
+            <a href="../research.html">Research</a>
+            <a href="../blog.html">Blog</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="blog-post">
+            <div class="post-header">
+                <h1>The Physics of Vert Skating</h1>
+                <p class="post-date">March 26, 2020</p>
+            </div>
+
+            <div class="post-content">
+
+                <p>Those who know me know that aside from physics, skateboarding has always been a major passion of mine. So in this post I'm gonna try to combine these two interests and see what we can figure out about skateboarding using physics. Skateboarding is an incredibly diverse and varied activity which can be done on obstacles of <a href="https://www.instagram.com/p/By6B25Phb9F/">virtually</a> <a href="https://www.youtube.com/watch?v=p-nAShvI_fo">any</a> <a href="https://vimeo.com/118643506">shape</a>, so for now I'll restrict the discussion to the physics of vert skating, which refers to skateboarding on a large half-pipe. </p>
+
+                <p>Half-pipe's are all roughly <a href="https://en.wikipedia.org/wiki/Half-pipe#/media/File:Half-Pipe_Vert_Ramp.svg">the same shape</a>, they have two 9 - 12 foot quarter-pipe ramps facing each other across from a short flat bottom, with 1 - 2 feet of vertical ("vert") on top of each quarter-pipe. What makes vert skating particularly amenable to analysis with the tools of physics is that the curved parts of the ramp, or "transitions", follow circular arcs, so we can use ideas from circular motion in our analysis.</p>
+
+                <p>If you've never seen vert skating, check out the winning runs from the most recent X-Games to get an idea of what we'll be thinking about:</p>
+
+                <center><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/n4Eq7sV6Uvg?si=V1SrWAI1vTfTtl7Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></center>
+
+                <p>There's lots of interesting physics going on here, but for this post I'm going to focus on two main topics: (1) how the skaters maintain their speed through an extremely clever use of angular momentum called "pumping", and (2) calculating the maximum height a skater might be able to "air" off the ramp. </p>
+
+                <p>If we consider the conservation of energy, we should come to the conclusion that a skater on a halfpipe can get no higher than they were on the other side of the ramp. Gravitational potential energy gets converted to kinetic energy as the skater goes down one side of the ramp, then gets converted back to gravitational potential energy as they go up the other side. This is very similar to the case of a pendulum, which will never get higher than its starting point once it's released, a concept that is masterfully demonstrated by Walter Lewin:</p>
+
+                <center><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/77ZF50ve6rs?si=n8nBdYrt9qc_5zCe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></center>
+
+                <p>Fear not! Conservation of energy holds as true as ever, but skateboarders are very clever, and have figured out how to utilize conservation of angular momentum to gain energy each time they go up and down the ramp, using a technique called <em>pumping</em>.</p>
+
+                <p>The angular momentum of an object, <em>L,</em> is defined as the product of the object's moment of inertia, <em>I</em>, and it's angular velocity, <em>ω</em>:</p>
+
+                <center><p>$L = I\omega$</p></center></center>
+
+                <p>Conservation of angular momentum simply says that in the absence of any applied torque, <em>L</em> remains constant. This means that if you can decrease <em>I</em>, then <em>ω </em>has to increase to compensate. This gives us a hint at how pumping works, it must have something to do with the skater lowering their moment of inertia to speed up.</p>
+
+                <p>Moment of inertia can be thought of as a measure of how difficult it is to get something to rotate, and is defined for a particle as $ I = mr^2 $. Imagine trying to swing a ball tied to a short string around your head, now imagine trying to swing the same ball but tied to a 10 foot string. It's gonna take much more effort to swing the ball tied to the longer string because the radius of rotation<em>, r</em>, is much larger. The lesson here is that you can significantly reduce an objects moment of inertia by reducing its radius of rotation. This is what skaters do during pumping!</p>
+
+                <!-- <img src="Vert/pumping2.png" alt="calculation" class="post-image"> -->
+                <!-- <p class="image-caption">Force diagram showing the feather (red) being swiped across the surface of a large metal sphere (black). F<sub>A</sub> is the applied force, F<sub>N</sub> is the normal force, and F<sub>F</sub> is the force of friction.</p> -->
+
+                <!-- /wp:paragraph -->
+
+                <!-- wp:image {"align":"center","id":513,"width":519,"height":372,"sizeSlug":"large"} -->
+                <center><div class="wp-block-image"><figure class="aligncenter size-large is-resized"><img src="Vert/pumping2.png" alt="" class="wp-image-513" width="519" height="372" /></figure></div></center>
+                <!-- /wp:image -->
+
+                <!-- wp:paragraph -->
+                <p>By starting with bent knees, like the skater at the bottom of the ramp in the figure above, and then extending them as they go up through the transition of the ramp, the skateboarder brings their center of mass closer to their axis of rotation, reducing their moment of inertia and increasing their angular velocity. The same thing is repeated on the way down the ramp, and again going up the left side of the ramp, etc.</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:media-text {"mediaId":531,"mediaLink":"https:\/\/nickdrachman.wordpress.com\/conservation-of-angular-momentum\/","mediaType":"image"} -->
+                <div class="wp-block-media-text alignwide is-stacked-on-mobile"><figure class="wp-block-media-text__media"><img src="https://nickdrachman.wordpress.com/wp-content/uploads/2020/03/conservation-of-angular-momentum.gif?w=728" alt="" class="wp-image-531" /></figure><div class="wp-block-media-text__content"><!-- wp:paragraph {"placeholder":"Content\u2026","fontSize":"normal"} -->
+                <p class="has-normal-font-size">Skaters are basically doing what you see here each time they go up or down either side of the ramp, reducing their radius of rotation to lower their moment of inertia and increase their rotation speed.</p>
+                <!-- /wp:paragraph --></div></div>
+                <!-- /wp:media-text -->
+
+                <!-- wp:paragraph -->
+                <p>We can calculate the energy gained each time the skater pumps. We'll start with conservation of angular momentum, and for simplicity's sake we'll just consider the skateboarder as a particle located at their center of mass. We'll assume that in the first stage of pumping, the skater's center of mass is a distance $ r_1 $ from the ramp's center of curvature, and in the second stage of pumping their center of mass is a distance $ r_2 $ from the ramp's center of curvature.</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $L_1 = L_2 $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $I_1\omega_1 = I_2\omega_2 $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $mr_1^2\omega_1 = mr_2^2\omega_2 $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Now we can just do a little rearranging to relate the ratio of angular velocities to the ratio of radii before and after pumping:</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $\frac{\omega_2}{\omega_1} = \frac{r_1^2}{r_2^2} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>From this we can plug in the equation relating angular and linear velocity $\omega = \frac{v}{r}$, which gives us</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $\frac{v_2}{v_1} = \frac{r_1}{r_2} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>This equation tells us that the speed gained from pumping is simply related to the amount the skater is able to bend and extend their knees during pumping.  </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Kinetic energy is given by $E= \frac{1}{2}mv^2$, so using the relation above we find that the ratio of energy before and after pumping is:</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $\frac{E_2}{E_1} = \frac{r_1^2}{r_2^2} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>So here we have a simple relation to see how much energy is gained from each pump, and now all we need to know is how much the skater's center of gravity changes each time they bend/unbend their knees. So lets put some actual numbers in and see what we get.</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:heading {"level":3} -->
+                <h3>Testing our result</h3>
+                <!-- /wp:heading -->
+
+                <!-- wp:paragraph -->
+                <p>A <a href="http://www.xgames.com/xgames/gallery/15604826/image/6/skateboard-bmx-vert">standard vert ramp</a> is about 13.5 feet tall with 2 feet of vertical at the top, so the curved part of the ramp is a quarter-circle with a radius of 11.5 feet, or 3.35 meters. The average height of an adult is 5'6", or 1.68 meters, and the average adult's center of gravity is about <a href="https://www.sciencedirect.com/topics/physics-and-astronomy/center-of-gravity">0.56 times their height</a>, so we find that an average center of gravity for a skater standing straight is 0.92 meters above the skateboard. After taking into account the height of the skateboard, we find that the distance between the average skater's center of gravity and the center of curvature of the ramp is about <strong>2.35 meters</strong> with legs fully extended. If their knees are bent, their center of mass should be lower by about 20%, so their center of gravity would be about 0.65 meters above the skateboard, and their distance from the ramp's center of curvature is <strong>2.54 meters</strong>. So we have all we need to calculate the energy gained with each pump: $r_1 = 2.64$ and $r_2 = 2.35$.</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Plugging this in to our energy equation we derived above:</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $\frac{E_2}{E_1} = \frac{2.54^2}{2.35^2} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $\frac{E_2}{E_1} =1.17 $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>So what this tells us is that with each full pump, the skateboarder can gain up to 17% of the energy they had before the pump. Keep in mind that there are two opportunities to pump on each side of the halfpipe, once going up and once coming down. Now this is just a rough estimate calculated with several simplifying assumptions, but it gives us an idea of how useful pumping is when it comes to maintaining speed in a halfpipe. As long as the energy gained from pumping is greater than the energy lost to friction, a skater can maintain or increase their speed in the ramp. </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Lets test this prediction. If I wasn't stuck in coronavirus quarantine like much of the world right now, I could go to a skatepark and take some measurements of myself pumping. In lieu of that, we'll just have to rely on what we can find online.</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:media-text {"mediaPosition":"right","mediaId":561,"mediaLink":"https:\/\/nickdrachman.wordpress.com\/andymac-2\/","mediaType":"image"} -->
+                <center><figure class="wp-block-media-text__media"><img src="https://nickdrachman.wordpress.com/wp-content/uploads/2020/03/andymac-2.png?w=1024" alt="" class="wp-image-561" width="601"/></figure></center>
+
+                <p><a href="https://youtu.be/1L3q74lJF5E?t=202">Here's a video</a> of Andy Macdonald pumping on a halfpipe, pay attention to how high he gets on the right side of the ramp at <a href="https://youtu.be/1L3q74lJF5E">3:30</a> and  <a href="https://youtu.be/1L3q74lJF5E?t=215">3:35</a> . It looks to be something like 6.5 feet before the pumps and 10 feet after the pumps.</p>
+                <!-- /wp:paragraph -->
+                <!-- /wp:media-text -->
+
+                <!-- wp:paragraph -->
+                <p>Using the formula for gravitational energy we see that Andy has gained about 54% of his energy from the four pumps he did in between those two measurements, which works out to 13.5% per pump. So our prediction of 17% energy gain for each pump turns out to be pretty close! </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>There must be a limit here though, right? If the skater can gain over 50% of their energy each time they go back and forth, then they should be able to launch themselves exponentially higher in the air each time, eventually reaching 10s or 100s of feet in the air.  This is obviously impossible, so what's the limiting factor here? </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:heading -->
+                <h2>2. Maximum Air Height</h2>
+                <!-- /wp:heading -->
+
+                <!-- wp:paragraph -->
+                <p>Why can't a skateboarder launch themselves 100 feet in the air off of a halfpipe? It all has to do with <em>centrifugal force</em>. </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:media-text {"mediaPosition":"right","mediaId":477,"mediaLink":"https:\/\/nickdrachman.wordpress.com\/centrifugal_force\/","mediaType":"image"} -->
+                <center><div class="wp-block-media-text alignwide has-media-on-the-right is-stacked-on-mobile"><figure class="wp-block-media-text__media"><img src="https://nickdrachman.wordpress.com/wp-content/uploads/2020/03/centrifugal_force.png?w=400" alt="Credit: XKCD, Randall Munroe" class="wp-image-477" /></figure><div class="wp-block-media-text__content"></center><!-- wp:paragraph {"placeholder":"Content\u2026","fontSize":"normal"} -->
+                <p class="has-normal-font-size">You may have learned in high-school physics that centrifugal force isn't real, and is just the result of inertia. And it's true that physicists refer to it as a <em>fictitious force</em>, but if you consider the forces in a rotating reference frame centrifugal force becomes very real, as described in this XKCD comic. </p>
+
+
+                <!-- wp:paragraph -->
+                <p>Written out in vector form, centrifugal force is defined as:</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $F_c = m\vec{\omega}\times (\vec{\omega} \times \vec{r}) $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>What this equation says is that a body undergoing circular motion will feel a force pointing away from the axis of rotation and proportional to the square of its angular velocity, <em>ω</em>, and to its distance from the axis,<em> r.</em> If we plug in $\omega = \frac{v}{r}$ as before, we can write down the equation for the force as $F_c = m\frac{v^2}{r}$. So this force gets stronger as the skater goes faster and as the radius of the ramp gets smaller.</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:embed {"url":"https:\/\/media.giphy.com\/media\/SqkZMDDo6PIeASJT6n\/giphy.mp4","type":"rich","providerNameSlug":"","className":""} -->
+                <center><iframe src="https://giphy.com/embed/SqkZMDDo6PIeASJT6n" width="480" height="360" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/SqkZMDDo6PIeASJT6n">via GIPHY</a></p>
+                <p class="image-caption">Don't underestimate the power of centrifugal force!</p></center>
+                <!-- /wp:embed -->
+
+                <!-- wp:paragraph -->
+                <p>So here's the key, as a skater goes up or down a ramp, they undergo circular motion and so they feel a centrifugal force pushing them down towards their feet, forcing them to bend their knees. When this force is strong enough, pumping becomes impossible because the skater can't extend their legs, making them unable to gain any more energy.<strong> So we can find the maximum height a skater can attain by considering the max speed at which the centrifugal force would be too great for them to pump against. </strong></p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>So what is this maximum force? Researchers from the University of Zagreb in Croatia <a href="https://arxiv.org/abs/1808.07417">investigated how much gravity humans could withstand</a> and still be able to walk. They found that with some training, humans could walk in some capacity at up to <em>4g</em>, meaning gravity 4 times as strong as it is on Earth. In the case of a skateboarder, they don't need to be able to walk per se, they just need to keep their legs from bending under the centrifugal force. So lets estimate that they'd be able to withstand a bit more force that that, something like <em>4.5g</em>. </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Now using very basic physics we can calculate the maximum possible height. We start by finding the maximum velocity they can attain before the centrifugal force surpasses 4.5g: </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $F_c = \frac{mv^2}{r} \rightarrow v = \sqrt{\frac{F_cr}{m}} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $v_{max} = \sqrt{\frac{4.5mgr}{m}} = \sqrt{4.5gr} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>So all we did there was rearrange the equation for centrifugal force and plug in the value of $ 4.5mg $ as the maximum centrifugal force a skater can withstand.</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Now we invoke the conservation of energy to see how much height can be obtained with this maximum velocity obtained above:</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $E_{kinetic} = E_{grav} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $\frac{1}{2}mv_{max}^2 = mgh_{max} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Plug in the formula for v<sub>max</sub> and simplify: </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $\frac{1}{2}m(4.5gr) = mgh_{max}$</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $2.25r = h_{max} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p></p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Now we just need to subtract off the total height of the ramp, since the height of an air in vert skating is always measured from the top of the ramp rather than from the ground:</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $h_{max} = 2.25r - h_{ramp} $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Great! now we have a simple formula for calculating the maximum height a skateboarder can reach in an air off a vert ramp. </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:heading {"level":3} -->
+                <h3>Testing our Result</h3>
+                <!-- /wp:heading -->
+
+                <!-- wp:paragraph -->
+                <p>If we again consider the size of an <a href="http://www.xgames.com/xgames/gallery/15604826/image/6/skateboard-bmx-vert">actual vert ramp</a>, we can get an actual number for the maximum height. This ramp had a radius of curvature of 11.5 feet (3.50 meters) and 2 feet (0.61 meters) of vert at the top, so $ r = 3.50 $ and $ h_{ramp} = 4.11 $. Plugging this in to our equation for h<sub>max</sub> gives us our answer:</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $h_{max} = 2.25(3.50m) - 4.41m $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph {"align":"center"} -->
+                <center><p> $h_{max} = 3.765 m $</p></center>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>There we have it! The maximum height a skater can get off a vert ramp is about 3.765 meters, or just over 12 feet. If you watch <a href="https://www.youtube.com/watch?v=iHH2XIBu4Go">this highest air contest from the 80s,</a> you'll see that even then skaters were getting up to about 10 feet, and <a href="https://www.instagram.com/p/B-nVrEEpB-z/?igshid=fa1yf6lvnknc">here's Tony Hawk</a> in an old TV interview saying that the record is "10 or 11 feet", so our prediction here seems to be in the right ballpark. </p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>Now lets graph how this max height depends on the shape of the ramp. For the sake of comparison, I've marked where the standard vert ramp (13.5 feet) and megaramp quarter pipe (27 feet) fall on this graph, as well as Danny Way's current <a href="https://www.guinnessworldrecords.com/world-records/63735-highest-air-on-a-skateboard-quarterpipe">world record</a> of a 25.5 foot air on a <a href="https://www.youtube.com/watch?v=DJP_csiU7rg">mega ramp</a>.</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:image {"align":"center","id":506,"width":601,"height":477,"sizeSlug":"large"} -->
+                <center><div class="wp-block-image"><figure class="aligncenter size-large is-resized"><img src="https://nickdrachman.wordpress.com/wp-content/uploads/2020/03/max-height-vs.-ramp-height-3.png?w=975" alt="" class="wp-image-506" width="601" height="477" /></figure></div></center>
+                <!-- /wp:image -->
+
+                <!-- wp:paragraph -->
+                <p>The situation is a little bit different on a mega ramp since the ramp isn't symmetrical, but you are still limited by the need to withstand the centrifugal force.</p>
+                <!-- /wp:paragraph -->
+
+                <!-- wp:paragraph -->
+                <p>So if anyone out there is feeling confident enough to challenge Danny Way's record, it looks like a few extra feet should be possible, just pump a little harder!</p>
+                <!-- /wp:paragraph -->
+
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
