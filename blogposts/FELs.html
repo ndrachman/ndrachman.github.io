@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractals in the Complex Plane - Nick Drachman</title>
+    <link rel="stylesheet" href="../styles.css">
+       <!-- Load MathJax from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                displayMath: [['$$','$$'], ['\\[','\\]']],
+                processEscapes: true
+            }
+        });
+    </script>
+</head>
+<body>
+    <header class="header">
+        <span class="header-name">Nick Drachman</span>
+        <nav class="nav-menu">
+            <a href="../index.html">About Me</a>
+            <a href="../research.html">Research</a>
+            <a href="../blog.html">Blog</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="blog-post">
+            <div class="post-header">
+                <h1>Free Electron Lasers (FELs) for EUV Lithography</h1>
+                <p class="post-date">October 20, 2023</p>
+            </div>
+
+            <div class="post-content">
+
+            <p>The semiconductor industry faces a critical bottleneck in extreme ultraviolet (EUV) lithography - the advanced technology needed to manufacture today's most sophisticated computer chips. Currently, this $10 billion market is monopolized by a single Dutch company, ASML, whose systems rely on laser-produced plasma light sources that are approaching their fundamental limits. As a project for an entrepeneurship course for STEM graduate students I took at Brown University,I conducted a technical and market analysis exploring an alternative approach to EUV lithography: using free electron lasers (FELs) as EUV light sources</p>
+
+            <img src="FELs/FELimage.png" alt="Free Electron Laser" class="post-image">
+
+            <p>Free electron lasers work by accelerating electrons to nearly the speed of light, then passing them through a series of alternating magnets called an undulator. As the electrons "wiggle" through these magnetic fields, they emit light at wavelengths determined by the electron energy and magnet spacing. Unlike traditional lasers that rely on atomic transitions in specific materials, FELs can be tuned to produce light at any desired wavelength simply by adjusting these parameters. This flexibility, combined with their potential for very high power output, makes them particularly interesting for next-generation chip manufacturing.</p>
+
+            <p>My analysis revealed that FEL-based systems could potentially leapfrog current technology by delivering higher power output and wavelength tunability - key advantages for future chip manufacturing nodes. While the estimated $250M development cost is substantial, it could be significantly reduced by leveraging existing Department of Energy facilities. However, the intellectual property landscape presents serious challenges, with ASML and its partners controlling 57% of relevant patents.</p>
+
+            <p>The project, which combined technical analyis, bibliometrics, patent landscape evaluation, and market research, suggests that FEL-based EUV lithography warrants serious consideration given the technology's promising capabilities and the strategic importance of establishing a domestic advanced chip manufacturing ecosystem. The projected $25 billion market size by 2028 could justify the necessary investment.</p>
+
+            <p>My complete analysis for this project can be found in the PDF below.</p>
+
+            <div class="pdf-container">
+                <object data="FELs/FEL-EUV Technical Analysis.pdf" type="application/pdf" width="100%" height="1000">
+                </object>
+            </div>
+
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
