@@ -514,3 +514,53 @@ ul {
   border-radius: 8px;
   padding: 1rem;
 }
+
+/* Book entries for reading list blog posts */ 
+
+.book-entry {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    align-items: center;  /* Changed from flex-start to center */
+}
+
+.book-image {
+    flex: 0 0 26%;
+    max-width: 200px;
+}
+
+.book-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.book-content {
+    flex: 1;
+}
+
+.book-content h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.book-content p {
+    margin: 0;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .book-entry {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .book-image {
+        max-width: 150px;
+        margin: 0 auto;
+    }
+    
+    .book-content {
+        text-align: center;
+    }
+}
