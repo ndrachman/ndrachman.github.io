@@ -1,0 +1,246 @@
+import React, { useState, useCallback, useMemo } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label } from 'recharts';
+import './Calculator.css';
+
+// Physical constants and model parameters
+const CONSTANTS = {
+    // Boltzmann constant (J/K)
+    k_B: 1.38e-23,
+    // Electron charge (C)
+    qe: 1.6e-19,
+    // Water molecular weight (kg)
+    m_w: 3e-26,
+    // Antoine equation coefficients for water
+    A: 10.21,
+    B: 1738.2,
+    C: -38.95,
+    // Water heat of vaporization (J)
+    Hv: 6.75e-20,
+    // Activation energy (J)
+    Gdag: 0.8e-19,
+    // Accommodation coefficient
+    alpha: 1.5,
+    // Ambient temperature (K)
+    T_inf: 300
+};
+
+function IonSourceCalculator() {
+    // State for input parameters
+    const [params, setParams] = useState({
+        r0: 20e-9,       // tip radius (m)
+        theta: 5,         // cone angle (degrees)
+        rho: 0.1,         // resistivity (Ω·m)
+        I: 10e-9,         // current (A)
+        k: 0.75           // thermal conductivity (W/(m·K))
+    });
+
+    // State for calculation results
+    const [temperatureData, setTemperatureData] = useState([]);
+    const [tipTemperature, setTipTemperature] = useState(null);
+
+    // Input change handler
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setParams(prev => ({
+            ...prev,
+            [name]: parseFloat(value)
+        }));
+    };
+
+    // Temperature calculation function
+    const calculateTemperatureProfile = useCallback(() => {
+        const { r0, theta, rho, I, k } = params;
+        const thetaRad = Math.PI * theta / 180;
+
+        // Find tip temperature (self-consistent calculation)
+        const findTipTemperature = () => {
+            // Generate temperature range for search
+            const Tbc1 = Array.from(
+                { length: 1000 }, 
+                (_, i) => Math.pow(10, Math.log10(150) + (Math.log10(500) - Math.log10(150)) * i / 999)
+            );
+
+            // Calculate terms
+            const temperatures = Tbc1.map(T => {
+                // Evaporation rate term
+                const Qdot_evap = CONSTANTS.alpha * Math.PI * r0**2 * CONSTANTS.Hv * 
+                    Math.pow(10, CONSTANTS.A - CONSTANTS.B / (T + CONSTANTS.C)) / 
+                    Math.sqrt(2 * Math.PI * CONSTANTS.m_w * CONSTANTS.k_B * T);
+
+                // Find x = 0 case
+                const x = 0;
+                const JouleTerm = I**2 * rho / (k * Math.PI**2 * Math.tan(thetaRad)**2) * 
+                    (1 / (r0 * (r0 + x * Math.tan(thetaRad))) - 
+                     1 / (2 * (r0 + x * Math.tan(thetaRad))**2));
+
+                const EvapTerm = -Qdot_evap / (k * Math.PI * Math.tan(thetaRad) * r0);
+
+                const IonEvapTerm = -I * CONSTANTS.Gdag / 
+                    (k * CONSTANTS.qe * Math.PI * Math.tan(thetaRad) * (r0 + x * Math.tan(thetaRad)));
+
+                return CONSTANTS.T_inf + JouleTerm + EvapTerm + IonEvapTerm - T;
+            });
+
+            // Find where the function crosses zero
+            const zeroIndex = temperatures.findIndex(val => Math.abs(val) < 1e-6);
+            return zeroIndex !== -1 ? Tbc1[zeroIndex] : Tbc1[Tbc1.length - 1];
+        };
+
+        // Calculate tip temperature
+        const Ttip = findTipTemperature();
+        setTipTemperature(Ttip);
+
+        // Calculate temperature profile along x
+        const x = Array.from(
+            { length: 1000 }, 
+            (_, i) => Math.pow(10, -12 + ((-3 - (-12)) * i / 999))
+        );
+
+        const temperatureProfile = x.map(xi => {
+            // Evaporation rate term
+            const Qdot_evap = CONSTANTS.alpha * Math.PI * r0**2 * CONSTANTS.Hv * 
+                Math.pow(10, CONSTANTS.A - CONSTANTS.B / (Ttip + CONSTANTS.C)) / 
+                Math.sqrt(2 * Math.PI * CONSTANTS.m_w * CONSTANTS.k_B * Ttip);
+
+            const JouleTerm = I**2 * rho / (k * Math.PI**2 * Math.tan(thetaRad)**2) * 
+                (1 / (r0 * (r0 + xi * Math.tan(thetaRad))) - 
+                 1 / (2 * (r0 + xi * Math.tan(thetaRad))**2));
+
+            const EvapTerm = -Qdot_evap / (k * Math.PI * Math.tan(thetaRad) * (r0 + xi * Math.tan(thetaRad)));
+
+            const IonEvapTerm = -I * CONSTANTS.Gdag / 
+                (k * CONSTANTS.qe * Math.PI * Math.tan(thetaRad) * (r0 + xi * Math.tan(thetaRad)));
+
+            return {
+                x: xi * Math.tan(thetaRad) / r0,
+                temperature: CONSTANTS.T_inf + JouleTerm + EvapTerm + IonEvapTerm
+            };
+        });
+
+        setTemperatureData(temperatureProfile);
+    }, [params]);
+
+    return (
+        <div className="calculator-container">
+            <h1>Ion Source Tip Temperature Calculator</h1>
+            
+            <div className="calculator-content">
+                <div className="input-grid">
+                    <div className="input-container">
+                        <label>Tip Radius (r₀) [m]</label>
+                        <input
+                            type="number"
+                            name="r0"
+                            value={params.r0}
+                            onChange={handleInputChange}
+                            step="1e-9"
+                            scientific
+                        />
+                    </div>
+                    <div className="input-container">
+                        <label>Cone Angle (θ) [degrees]</label>
+                        <input
+                            type="number"
+                            name="theta"
+                            value={params.theta}
+                            onChange={handleInputChange}
+                            step="1"
+                        />
+                    </div>
+                    <div className="input-container">
+                        <label>Resistivity (ρ) [Ω·m]</label>
+                        <input
+                            type="number"
+                            name="rho"
+                            value={params.rho}
+                            onChange={handleInputChange}
+                            step="0.1"
+                        />
+                    </div>
+                    <div className="input-container">
+                        <label>Current (I) [A]</label>
+                        <input
+                            type="number"
+                            name="I"
+                            value={params.I}
+                            onChange={handleInputChange}
+                            step="1e-9"
+                            scientific
+                        />
+                    </div>
+                    <div className="input-container">
+                        <label>Thermal Conductivity (k) [W/(m·K)]</label>
+                        <input
+                            type="number"
+                            name="k"
+                            value={params.k}
+                            onChange={handleInputChange}
+                            step="0.1"
+                        />
+                    </div>
+                </div>
+
+                <button className="calculate-button" onClick={calculateTemperatureProfile}>
+                    Calculate Temperature Profile
+                </button>
+
+                {tipTemperature && (
+                    <div className="result-container">
+                        <p>Tip Temperature: {tipTemperature.toFixed(2)} K</p>
+                    </div>
+                )}
+
+                {temperatureData.length > 0 && (
+                    <div className="chart-container">
+                        <ResponsiveContainer>
+                            <LineChart data={temperatureData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis 
+                                    dataKey="x" 
+                                    label={{ value: 'Normalized Position x/r₀', position: 'insideBottomRight' }}
+                                />
+                                <YAxis 
+                                    label={{ 
+                                        value: 'Temperature (K)', 
+                                        angle: -90, 
+                                        position: 'insideLeft' 
+                                    }}
+                                />
+                                <Tooltip 
+                                    formatter={(value, name) => [
+                                        name === 'temperature' ? value.toFixed(2) : value.toFixed(4), 
+                                        name === 'temperature' ? 'Temperature (K)' : 'Normalized Position'
+                                    ]}
+                                />
+                                <Line 
+                                    type="monotone" 
+                                    dataKey="temperature" 
+                                    stroke="#0066cc" 
+                                    dot={false}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+                )}
+
+                <div className="model-description">
+                    <h3>Model Description</h3>
+                    <p>
+                        This calculator implements a thermal model for an ion source tip, 
+                        considering Joule heating, evaporative cooling, and ion evaporation effects. 
+                        The temperature profile is calculated using a self-consistent method 
+                        that balances various thermal transfer mechanisms.
+                    </p>
+                    <p>Key components include:</p>
+                    <ul>
+                        <li>Joule heating from electrical current</li>
+                        <li>Evaporative cooling based on molecular dynamics</li>
+                        <li>Ion evaporation thermal effects</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default IonSourceCalculator;
