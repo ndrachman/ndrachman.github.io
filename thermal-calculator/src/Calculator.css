@@ -1,14 +1,21 @@
+body {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
 .calculator-container {
     max-width: 800px;
-    margin: 0 auto;
     padding: 1.25rem;
-    width: 90%;
+    width: 100%;
 }
 
 .calculator-container h1 {
     color: #333;
-    text-align: left;
-    margin-bottom: 1.875rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
 }
 
 .calculator-content {
@@ -32,7 +39,7 @@
 }
 
 .input-container input {
-    width: 120px;  /* Instead of 100% */
+    width: 180px;  /* Instead of 100% */
     padding: 0.625rem;
     border: 1px solid #ddd;
     border-radius: 4px;

@@ -1,10 +1,3 @@
-<XAxis
-    dataKey="x"
-    type="number"
-    domain={[0, 5]}
-    tickFormatter={(value) => value.toFixed(2)}
-    label={{ value: 'Normalized Position x·tan(θ)/r₀', position: 'insideBottom', offset: -10 }}
-/>
 import React, { useState, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './Calculator.css';
@@ -15,31 +8,57 @@ const CONSTANTS = {
     k_B: 1.38e-23,
     // Electron charge (C)
     qe: 1.6e-19,
-    // Ambient temperature (K)
-    T_inf: 300
 };
 
 function IonSourceCalculator() {
-    // State for input parameters
-    const [params, setParams] = useState({
-        r0: 20,       // tip radius (m)
-        theta: 5,         // cone angle (degrees)
-        rho: 0.1,         // resistivity (Ω·m)
-        I: 10e-9,         // current (A)
-        k: 0.75           // thermal conductivity (W/(m·K))
+    // State for input parameters as strings    <-- ADD HERE, REPLACE EXISTING STATE
+    const [inputValues, setInputValues] = useState({
+        r0: '20',       // tip radius (m)
+        theta: '5',     // cone angle (degrees)
+        rho: '0.1',     // resistivity (Ω·m)
+        I: '1e-8',      // current (A)
+        k: '0.75',      // thermal conductivity (W/(m·K))
+        T_inf: '300'    // ambient temperature (K)
     });
 
-    // State for calculation results
+    // State for parsed numerical parameters
+    const [params, setParams] = useState({
+        r0: 20,
+        theta: 5,
+        rho: 0.1,
+        I: 1e-8,
+        k: 0.75,
+        T_inf: 300
+    });
+
+    // State for calculation results    <-- KEEP THIS EXISTING STATE
     const [temperatureData, setTemperatureData] = useState([]);
     const [tipTemperature, setTipTemperature] = useState(null);
 
-    // Input change handler
+    // Replace the existing handleInputChange function with this new one
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setParams(prev => ({
+        
+        // Update the string value
+        setInputValues(prev => ({
             ...prev,
-            [name]: parseFloat(value)
+            [name]: value
         }));
+
+        // Try to parse the value as a number
+        try {
+            // Handle both decimal and scientific notation
+            const numValue = Function(`"use strict"; return (${value})`)();
+            if (!isNaN(numValue) && isFinite(numValue)) {
+                setParams(prev => ({
+                    ...prev,
+                    [name]: numValue
+                }));
+            }
+        } catch (error) {
+            // If parsing fails, don't update the numerical params
+            console.log(`Invalid number format for ${name}: ${value}`);
+        }
     };
 
     // Temperature calculation function
@@ -87,7 +106,7 @@ function IonSourceCalculator() {
                     (k * qe * Math.PI * Math.tan(thetaRad) * (r0_meters + x * Math.tan(thetaRad)));
 
                 // Total temperature
-                const Tbc2 = CONSTANTS.T_inf + JouleTerm + EvapTerm + IonEvapTerm;
+                const Tbc2 = params.T_inf + JouleTerm + EvapTerm + IonEvapTerm;
 
                 return {
                     T1: T,
@@ -126,7 +145,7 @@ function IonSourceCalculator() {
             console.log(`JouleTerm (x=0): ${JouleTerm.toExponential(4)}`);
             console.log(`EvapTerm (x=0): ${EvapTerm.toExponential(4)}`);
             console.log(`IonEvapTerm (x=0): ${IonEvapTerm.toExponential(4)}`);
-            console.log(`Total Term (x=0): ${CONSTANTS.T_inf + JouleTerm + EvapTerm + IonEvapTerm}`);
+            console.log(`Total Term (x=0): ${params.T_inf + JouleTerm + EvapTerm + IonEvapTerm}`);
 
             return Ttip;
         };
@@ -167,7 +186,7 @@ function IonSourceCalculator() {
 
             return {
                 x: xi * Math.tan(thetaRad) / r0_meters,
-                temperature: CONSTANTS.T_inf + JouleTerm + EvapTerm + IonEvapTerm
+                temperature: params.T_inf + JouleTerm + EvapTerm + IonEvapTerm
             };
         });
 
@@ -175,6 +194,52 @@ function IonSourceCalculator() {
 
         setTemperatureData(temperatureProfile);
     }, [params]);
+    
+    const calculateYAxisTicks = (minValue, maxValue) => {
+        console.log('Min value:', minValue);
+        console.log('Max value:', maxValue);
+        console.log('Range:', maxValue - minValue);
+        
+        const range = maxValue - minValue;
+        const possibleIntervals = [100, 50, 25, 10, 5, 2.5, 1, 0.5, 0.25, 0.1, 0.05, 0.025, 0.01];
+        
+        // Find the interval that will give us 4-6 ticks
+        let selectedInterval = possibleIntervals[0];
+        for (const interval of possibleIntervals) {
+            const numTicks = range / interval;
+            console.log(`Interval ${interval} would give ${numTicks} ticks`);
+            if (numTicks >= 3 && numTicks <= 8) {
+                selectedInterval = interval;
+                console.log('Selected interval:', selectedInterval);
+                break;
+            }
+        }
+
+        // Extend the range slightly to get nice round numbers
+        const padding = selectedInterval;
+        const lowBound = Math.floor(minValue / selectedInterval) * selectedInterval;
+        const highBound = Math.ceil(maxValue / selectedInterval) * selectedInterval;
+
+        // Generate ticks
+        const ticks = [];
+        for (let tick = lowBound; tick <= highBound + (selectedInterval / 2); tick += selectedInterval) {
+            ticks.push(parseFloat(tick.toFixed(6))); // Avoid floating point errors
+        }
+
+        // If we got too many or too few ticks, try adjusting
+        if (ticks.length < 4 || ticks.length > 7) {
+            const smallerInterval = selectedInterval / 2;
+            const moreTicks = [];
+            for (let tick = lowBound; tick <= highBound + (smallerInterval / 2); tick += smallerInterval) {
+                moreTicks.push(parseFloat(tick.toFixed(6)));
+            }
+            if (moreTicks.length >= 4 && moreTicks.length <= 6) {
+                return moreTicks;
+            }
+        }
+        
+        return ticks;
+    };
 
     return (
         <div className="calculator-container">
@@ -185,51 +250,61 @@ function IonSourceCalculator() {
                     <div className="input-container">
                         <label>Tip Radius (r₀) [nm]</label>
                         <input
-                            type="number"
+                            type="text"
                             name="r0"
-                            value={params.r0}
+                            value={inputValues.r0}
                             onChange={handleInputChange}
-                            step="1"
+                            placeholder="e.g., 100 or 1e2"
                         />
                     </div>
                     <div className="input-container">
                         <label>Cone Angle (θ) [degrees]</label>
                         <input
-                            type="number"
+                            type="text"
                             name="theta"
-                            value={params.theta}
+                            value={inputValues.theta}
                             onChange={handleInputChange}
-                            step="1"
+                            placeholder="e.g., 5"
                         />
                     </div>
                     <div className="input-container">
                         <label>Resistivity (ρ) [Ω·m]</label>
                         <input
-                            type="number"
+                            type="text"
                             name="rho"
-                            value={params.rho}
+                            value={inputValues.rho}
                             onChange={handleInputChange}
-                            step="0.1"
+                            placeholder="e.g., 0.1 or 1e-1"
                         />
                     </div>
                     <div className="input-container">
                         <label>Current (I) [A]</label>
                         <input
-                            type="number"
+                            type="text"
                             name="I"
-                            value={params.I}
+                            value={inputValues.I}
                             onChange={handleInputChange}
-                            step="1e-9"
+                            placeholder="e.g., 1e-8"
                         />
                     </div>
                     <div className="input-container">
                         <label>Thermal Conductivity (k) [W/(m·K)]</label>
                         <input
-                            type="number"
+                            type="text"
                             name="k"
-                            value={params.k}
+                            value={inputValues.k}
                             onChange={handleInputChange}
-                            step="0.1"
+                            placeholder="e.g., 0.75"
+                        />
+                    </div>
+                    <div className="input-container">
+                        <label>Ambient Temperature (T∞) [K]</label>
+                        <input
+                            type="text"
+                            name="T_inf"
+                            value={inputValues.T_inf}
+                            onChange={handleInputChange}
+                            placeholder="e.g., 300"
                         />
                     </div>
                 </div>
@@ -247,8 +322,7 @@ function IonSourceCalculator() {
                 {temperatureData.length > 0 && (
                     <div className="chart-container">
                         <ResponsiveContainer>
-                            <LineChart data={temperatureData.filter(d => d.x >= 0 && d.x <= 5)} margin={{ top: 20, right: 30, left: 25, bottom: 25 }}  // Add this line
-                            >
+                            <LineChart data={temperatureData.filter(d => d.x >= 0 && d.x <= 5)} margin={{ top: 20, right: 30, left: 25, bottom: 25 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis
                                     dataKey="x"
@@ -262,7 +336,11 @@ function IonSourceCalculator() {
                                     }}
                                 />
                                 <YAxis
-                                    domain={['dataMin - 5', 'dataMax + 5']}
+                                    ticks={calculateYAxisTicks(
+                                        Math.min(...temperatureData.map(d => d.temperature)),
+                                        Math.max(...temperatureData.map(d => d.temperature))
+                                    )}
+                                    domain={['auto', 'auto']}
                                     tickFormatter={(value) => value.toFixed(2)}
                                     label={{
                                         value: 'Temperature (K)',
