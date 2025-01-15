@@ -238,7 +238,10 @@ function IonSourceCalculator() {
             }
         }
         
-        return ticks;
+        return {
+            ticks: ticks,
+            domain: [ticks[0], ticks[ticks.length - 1]]
+        };
     };
 
     return (
@@ -339,8 +342,11 @@ function IonSourceCalculator() {
                                     ticks={calculateYAxisTicks(
                                         Math.min(...temperatureData.map(d => d.temperature)),
                                         Math.max(...temperatureData.map(d => d.temperature))
-                                    )}
-                                    domain={['auto', 'auto']}
+                                    ).ticks}
+                                    domain={calculateYAxisTicks(
+                                        Math.min(...temperatureData.map(d => d.temperature)),
+                                        Math.max(...temperatureData.map(d => d.temperature))
+                                    ).domain}
                                     tickFormatter={(value) => value.toFixed(2)}
                                     label={{
                                         value: 'Temperature (K)',
@@ -354,6 +360,7 @@ function IonSourceCalculator() {
                                         value.toFixed(2),
                                         name === 'temperature' ? 'Temperature (K)' : 'Normalized Position'
                                     ]}
+                                    labelFormatter={(label) => `x·tan(θ)/r₀: ${label.toFixed(2)}`}
                                 />
                                 <Line
                                     type="monotone"
@@ -366,7 +373,7 @@ function IonSourceCalculator() {
                     </div>
                 )}
 
-                <div className="model-description">
+{/*                <div className="model-description">
                     <h3>Model Description</h3>
                     <p>
                         This calculator implements a thermal model for an ion source tip, 
@@ -380,7 +387,7 @@ function IonSourceCalculator() {
                         <li>Evaporative cooling based on molecular dynamics</li>
                         <li>Ion evaporation thermal effects</li>
                     </ul>
-                </div>
+                </div>*/}
             </div>
         </div>
     );
