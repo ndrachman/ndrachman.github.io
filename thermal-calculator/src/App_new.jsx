@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import './Calculator.css';
 
 // Physical constants and model parameters
@@ -8,7 +9,7 @@ const CONSTANTS = {
     k_B: 1.38e-23,
     // Electron charge (C)
     qe: 1.6e-19,
-    // Antoine parameters and physical properties
+    // Antoine parameters for water
     WATER: {
         A: 10.21,
         B: 1738.2,
@@ -16,29 +17,32 @@ const CONSTANTS = {
         Hv: 6.75e-20,  // Enthalpy of vaporization (J)
         m_w: 3e-26,    // Molecular mass (kg)
     },
+    // Antoine parameters for formamide
     FORMAMIDE: {
         A: 7.585,
         B: 3881.3,
         C: 27.66,
-        Hv: 1.16e-19,  // Enthalpy of vaporization (J)
+        Hv: 8.42e-20,  // Enthalpy of vaporization (J)
         m_w: 7.5e-26,  // Molecular mass (kg)
     },
+    // Common parameters
     Gdag: 0.8e-19,     // Ion evaporation activation energy (J)
     alpha: 1.5,        // Evaporation coefficient
 };
 
 function IonSourceCalculator() {
-    // State for input parameters as strings    <-- ADD HERE, REPLACE EXISTING STATE
+    // Add solvent selection state
+    const [solvent, setSolvent] = useState('water');
+    
+    // State for input parameters as strings
     const [inputValues, setInputValues] = useState({
-        r0: '20',       // tip radius (m)
+        r0: '20',       // tip radius (nm)
         theta: '5',     // cone angle (degrees)
         rho: '0.1',     // resistivity (Ω·m)
         I: '1e-8',      // current (A)
         k: '0.75',      // thermal conductivity (W/(m·K))
         T_inf: '300'    // ambient temperature (K)
     });
-
-    const [solvent, setSolvent] = useState('water');
 
     // State for parsed numerical parameters
     const [params, setParams] = useState({
@@ -50,16 +54,42 @@ function IonSourceCalculator() {
         T_inf: 300
     });
 
-    // State for calculation results    <-- KEEP THIS EXISTING STATE
+    // Add error state
+    const [errors, setErrors] = useState({});
+    const [calculationError, setCalculationError] = useState(null);
+    
+    // State for calculation results
     const [temperatureData, setTemperatureData] = useState([]);
     const [tipTemperature, setTipTemperature] = useState(null);
 
-
-
-    const handleSolventChange = (e) => {
-        setSolvent(e.target.value);
+    // Input validation function
+    const validateInput = (name, value) => {
+        const numValue = Number(value);
+        
+        switch(name) {
+            case 'r0':
+                if (numValue <= 0) return 'Tip radius must be positive';
+                break;
+            case 'theta':
+                if (numValue <= 0 || numValue >= 90) return 'Cone angle must be between 0° and 90°';
+                break;
+            case 'rho':
+                if (numValue <= 0) return 'Resistivity must be positive';
+                break;
+            case 'k':
+                if (numValue <= 0) return 'Thermal conductivity must be positive';
+                break;
+            case 'T_inf':
+                if (numValue < 0) return 'Temperature cannot be negative';
+                break;
+            case 'I':
+                if (numValue === 0) return 'Current cannot be zero';
+                break;
+        }
+        return null;
     };
 
+    // Handle input changes with validation
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         
@@ -69,9 +99,15 @@ function IonSourceCalculator() {
             [name]: value
         }));
 
+        // Validate and update errors
+        const error = validateInput(name, value);
+        setErrors(prev => ({
+            ...prev,
+            [name]: error
+        }));
+
         // Try to parse the value as a number
         try {
-            // Handle both decimal and scientific notation
             const numValue = Function(`"use strict"; return (${value})`)();
             if (!isNaN(numValue) && isFinite(numValue)) {
                 setParams(prev => ({
@@ -80,191 +116,138 @@ function IonSourceCalculator() {
                 }));
             }
         } catch (error) {
-            // If parsing fails, don't update the numerical params
-            console.log(`Invalid number format for ${name}: ${value}`);
+            setErrors(prev => ({
+                ...prev,
+                [name]: 'Invalid number format'
+            }));
         }
+    };
+
+    // Handle solvent change
+    const handleSolventChange = (e) => {
+        setSolvent(e.target.value);
     };
 
     // Temperature calculation function
     const calculateTemperatureProfile = useCallback(() => {
+        // Clear previous errors
+        setCalculationError(null);
+
+        // Check for any validation errors
+        const hasErrors = Object.values(errors).some(error => error !== null);
+        if (hasErrors) {
+            setCalculationError('Please fix input errors before calculating');
+            return;
+        }
+
         const r0_meters = params.r0 * 1e-9;
         const {theta, rho, I, k } = params;
         const thetaRad = Math.PI * theta / 180;
 
+        // Get solvent parameters
+        const solventParams = solvent === 'water' ? CONSTANTS.WATER : CONSTANTS.FORMAMIDE;
+        const { A, B, C, Hv, m_w } = solventParams;
+
         // Find tip temperature (self-consistent calculation)
         const findTipTemperature = () => {
-            // Generate temperature range for search (150K to 500K, log-spaced)
+            // Generate temperature range for search
             const Tbc1 = Array.from(
                 { length: 10000 }, 
                 (_, i) => Math.pow(10, Math.log10(150) + (Math.log10(500) - Math.log10(150)) * i / 9999)
             );
 
-            // Get solvent parameters
-            const solventParams = solvent === 'water' ? CONSTANTS.WATER : CONSTANTS.FORMAMIDE;
-            const { A, B, C, Hv, m_w } = solventParams;
-            const { Gdag, alpha, k_B, qe } = CONSTANTS;
+            // Constants for evaporation calculation
+            const { Gdag, alpha } = CONSTANTS;
+            const qe = CONSTANTS.qe;
+            const k_B = CONSTANTS.k_B;
+            const x = 0;
 
-            const x = 0;  // Calculate at the tip
-
-            // Calculate temperature balance for each potential tip temperature
-            const temperatures = Tbc1.map(Ttip => {
-                // Evaporation rate term
+            // Calculate evaporation and terms
+            const temperatures = Tbc1.map(T => {
+                // Calculate vapor pressure based on solvent
                 const Qdot_evap = alpha * Math.PI * r0_meters**2 * Hv * 
-                    (solvent === 'water' ? 
-                        Math.pow(10, A - B / (Ttip + C)) :      // if water
-                        1e5 * Math.pow(10, A - B / (Ttip + C))) // if formamide, multiply by 1e5
-                    / Math.sqrt(2 * Math.PI * m_w * k_B * Ttip);
+                    Math.pow(10, A - B / (T + C)) / 
+                    Math.sqrt(2 * Math.PI * m_w * k_B * T);
 
-                // Joule heating term
+                // Joule Term
                 const JouleTerm = I**2 * rho / (k * Math.PI**2 * Math.tan(thetaRad)**2) * 
                     (1 / (r0_meters * (r0_meters + x * Math.tan(thetaRad))) - 
                      1 / (2 * (r0_meters + x * Math.tan(thetaRad))**2));
 
-                // Evaporative cooling term
+                // Evaporation Term
                 const EvapTerm = -Qdot_evap / (k * Math.PI * Math.tan(thetaRad) * r0_meters);
 
-                // Ion evaporation term
+                // Ion Evaporation Term
                 const IonEvapTerm = -I * Gdag / 
                     (k * qe * Math.PI * Math.tan(thetaRad) * (r0_meters + x * Math.tan(thetaRad)));
 
-                // Calculate total temperature (T_inf + heating - cooling terms)
+                // Total temperature
                 const Tbc2 = params.T_inf + JouleTerm + EvapTerm + IonEvapTerm;
 
-                // Return temperature difference for finding intersection
                 return {
-                    T1: Ttip,
+                    T1: T,
                     T2: Tbc2,
-                    diff: Ttip - Tbc2
+                    diff: T - Tbc2
                 };
             });
 
-            // Find intersection point where T1 = T2 (diff changes sign)
+            // Find intersection point
             const intersectionIndex = temperatures.findIndex((point, index) => 
                 index > 0 && 
                 Math.sign(temperatures[index-1].diff) !== Math.sign(point.diff)
             );
 
-            // Get the tip temperature at intersection
-            const Ttip = intersectionIndex !== -1 
-                ? Tbc1[intersectionIndex] 
-                : Tbc1[Tbc1.length - 1];
+            if (intersectionIndex === -1) {
+                throw new Error('No solution found in the temperature range 150K-500K');
+            }
 
-            // Recalculate final terms at found tip temperature for logging
-            const Qdot_evap = alpha * Math.PI * r0_meters**2 * Hv * 
-                (solvent === 'water' ? 
-                    Math.pow(10, A - B / (Ttip + C)) :      // if water
-                    1e5 * Math.pow(10, A - B / (Ttip + C))) // if formamide
-                / Math.sqrt(2 * Math.PI * m_w * k_B * Ttip);
-
-            const JouleTerm = I**2 * rho / (k * Math.PI**2 * Math.tan(thetaRad)**2) * 
-                (1 / (r0_meters * (r0_meters + x * Math.tan(thetaRad))) - 
-                 1 / (2 * (r0_meters + x * Math.tan(thetaRad))**2));
-
-            const EvapTerm = -Qdot_evap / (k * Math.PI * Math.tan(thetaRad) * r0_meters);
-
-            const IonEvapTerm = -I * Gdag / 
-                (k * qe * Math.PI * Math.tan(thetaRad) * (r0_meters + x * Math.tan(thetaRad)));
-
-            // Log the final terms for debugging
-            console.log(`Tip Temperature: ${Ttip.toFixed(5)} K`);
-            console.log(`Qdot_evap (x=0): ${Qdot_evap.toExponential(4)}`);
-            console.log(`JouleTerm (x=0): ${JouleTerm.toExponential(4)}`);
-            console.log(`EvapTerm (x=0): ${EvapTerm.toExponential(4)}`);
-            console.log(`IonEvapTerm (x=0): ${IonEvapTerm.toExponential(4)}`);
-            console.log(`Total Term (x=0): ${params.T_inf + JouleTerm + EvapTerm + IonEvapTerm}`);
-
-            return Ttip;
+            // Return tip temperature
+            return Tbc1[intersectionIndex];
         };
 
-        // Calculate tip temperature
-        const Ttip = findTipTemperature();
-        setTipTemperature(Ttip);
+        try {
+            // Calculate tip temperature
+            const Ttip = findTipTemperature();
+            setTipTemperature(Ttip);
 
-        // Calculate temperature profile along x
-        const x = Array.from(
-            { length: 1000 }, 
-            (_, i) => Math.pow(10, -12 + ((-1 - (-12)) * i / 999))
-        );
+            // Calculate temperature profile along x
+            const x = Array.from(
+                { length: 1000 }, 
+                (_, i) => Math.pow(10, -12 + ((-3 - (-12)) * i / 999))
+            );
 
-        const temperatureProfile = x.map(xi => {
-            // Get solvent parameters again
-            const solventParams = solvent === 'water' ? CONSTANTS.WATER : CONSTANTS.FORMAMIDE;
-            const { A, B, C, Hv, m_w } = solventParams;
-            const { Gdag, alpha, k_B, qe } = CONSTANTS;
+            const temperatureProfile = x.map(xi => {
+                // Recalculate terms for profile using the same solvent parameters
+                const { Gdag, alpha } = CONSTANTS;
+                const qe = CONSTANTS.qe;
+                const k_B = CONSTANTS.k_B;
 
-            const Qdot_evap = alpha * Math.PI * r0_meters**2 * Hv * 
-                (solvent === 'water' ? 
-                    Math.pow(10, A - B / (Ttip + C)) :
-                    1e5 * Math.pow(10, A - B / (Ttip + C))) /
-                Math.sqrt(2 * Math.PI * m_w * k_B * Ttip);
+                const Qdot_evap = alpha * Math.PI * r0_meters**2 * Hv * 
+                    Math.pow(10, A - B / (Ttip + C)) / 
+                    Math.sqrt(2 * Math.PI * m_w * k_B * Ttip);
 
-            const JouleTerm = I**2 * rho / (k * Math.PI**2 * Math.tan(thetaRad)**2) * 
-                (1 / (r0_meters * (r0_meters + xi * Math.tan(thetaRad))) - 
-                 1 / (2 * (r0_meters + xi * Math.tan(thetaRad))**2));
+                const JouleTerm = I**2 * rho / (k * Math.PI**2 * Math.tan(thetaRad)**2) * 
+                    (1 / (r0_meters * (r0_meters + xi * Math.tan(thetaRad))) - 
+                     1 / (2 * (r0_meters + xi * Math.tan(thetaRad))**2));
 
-            const EvapTerm = -Qdot_evap / (k * Math.PI * Math.tan(thetaRad) * (r0_meters + xi * Math.tan(thetaRad)));
+                const EvapTerm = -Qdot_evap / (k * Math.PI * Math.tan(thetaRad) * (r0_meters + xi * Math.tan(thetaRad)));
 
-            const IonEvapTerm = -I * Gdag / 
-                (k * qe * Math.PI * Math.tan(thetaRad) * (r0_meters + xi * Math.tan(thetaRad)));
+                const IonEvapTerm = -I * Gdag / 
+                    (k * qe * Math.PI * Math.tan(thetaRad) * (r0_meters + xi * Math.tan(thetaRad)));
 
-            return {
-                x: xi * Math.tan(thetaRad) / r0_meters,
-                temperature: params.T_inf + JouleTerm + EvapTerm + IonEvapTerm
-            };
-        });
+                return {
+                    x: xi * Math.tan(thetaRad) / r0_meters,
+                    temperature: params.T_inf + JouleTerm + EvapTerm + IonEvapTerm
+                };
+            });
 
-        setTemperatureData(temperatureProfile);
-            }, [params, solvent]);  // <-- Modified line to include solvent
-
-    
-    const calculateYAxisTicks = (minValue, maxValue) => {
-        console.log('Min value:', minValue);
-        console.log('Max value:', maxValue);
-        console.log('Range:', maxValue - minValue);
-        
-        const range = maxValue - minValue;
-        const possibleIntervals = [100, 50, 25, 10, 5, 2.5, 1, 0.5, 0.25, 0.1, 0.05, 0.025, 0.01];
-        
-        // Find the interval that will give us 4-6 ticks
-        let selectedInterval = possibleIntervals[0];
-        for (const interval of possibleIntervals) {
-            const numTicks = range / interval;
-            console.log(`Interval ${interval} would give ${numTicks} ticks`);
-            if (numTicks >= 3 && numTicks <= 8) {
-                selectedInterval = interval;
-                console.log('Selected interval:', selectedInterval);
-                break;
-            }
+            setTemperatureData(temperatureProfile);
+        } catch (error) {
+            setCalculationError(error.message);
+            setTipTemperature(null);
+            setTemperatureData([]);
         }
-
-        // Extend the range slightly to get nice round numbers
-        const padding = selectedInterval;
-        const lowBound = Math.floor(minValue / selectedInterval) * selectedInterval;
-        const highBound = Math.ceil(maxValue / selectedInterval) * selectedInterval;
-
-        // Generate ticks
-        const ticks = [];
-        for (let tick = lowBound; tick <= highBound + (selectedInterval / 2); tick += selectedInterval) {
-            ticks.push(parseFloat(tick.toFixed(6))); // Avoid floating point errors
-        }
-
-        // If we got too many or too few ticks, try adjusting
-        if (ticks.length < 4 || ticks.length > 7) {
-            const smallerInterval = selectedInterval / 2;
-            const moreTicks = [];
-            for (let tick = lowBound; tick <= highBound + (smallerInterval / 2); tick += smallerInterval) {
-                moreTicks.push(parseFloat(tick.toFixed(6)));
-            }
-            if (moreTicks.length >= 4 && moreTicks.length <= 6) {
-                return moreTicks;
-            }
-        }
-        
-        return {
-            ticks: ticks,
-            domain: [ticks[0], ticks[ticks.length - 1]]
-        };
-    };
+    }, [params, solvent, errors]);
 
     return (
         <div className="calculator-container">
@@ -272,7 +255,7 @@ function IonSourceCalculator() {
             
             <div className="calculator-content">
                 <div className="input-grid">
-
+                    {/* Solvent selection */}
                     <div className="input-container">
                         <label>Solvent</label>
                         <select
@@ -284,6 +267,8 @@ function IonSourceCalculator() {
                             <option value="formamide">Formamide</option>
                         </select>
                     </div>
+
+                    {/* Other inputs */}
                     <div className="input-container">
                         <label>Tip Radius (r₀) [nm]</label>
                         <input
@@ -292,7 +277,9 @@ function IonSourceCalculator() {
                             value={inputValues.r0}
                             onChange={handleInputChange}
                             placeholder="e.g., 100 or 1e2"
+                            className={errors.r0 ? 'error' : ''}
                         />
+                        {errors.r0 && <span className="error-message">{errors.r0}</span>}
                     </div>
                     <div className="input-container">
                         <label>Cone Angle (θ) [degrees]</label>
@@ -302,7 +289,9 @@ function IonSourceCalculator() {
                             value={inputValues.theta}
                             onChange={handleInputChange}
                             placeholder="e.g., 5"
+                            className={errors.theta ? 'error' : ''}
                         />
+                        {errors.theta && <span className="error-message">{errors.theta}</span>}
                     </div>
                     <div className="input-container">
                         <label>Resistivity (ρ) [Ω·m]</label>
@@ -312,7 +301,9 @@ function IonSourceCalculator() {
                             value={inputValues.rho}
                             onChange={handleInputChange}
                             placeholder="e.g., 0.1 or 1e-1"
+                            className={errors.rho ? 'error' : ''}
                         />
+                        {errors.rho && <span className="error-message">{errors.rho}</span>}
                     </div>
                     <div className="input-container">
                         <label>Current (I) [A]</label>
@@ -322,7 +313,9 @@ function IonSourceCalculator() {
                             value={inputValues.I}
                             onChange={handleInputChange}
                             placeholder="e.g., 1e-8"
+                            className={errors.I ? 'error' : ''}
                         />
+                        {errors.I && <span className="error-message">{errors.I}</span>}
                     </div>
                     <div className="input-container">
                         <label>Thermal Conductivity (k) [W/(m·K)]</label>
@@ -332,7 +325,9 @@ function IonSourceCalculator() {
                             value={inputValues.k}
                             onChange={handleInputChange}
                             placeholder="e.g., 0.75"
+                            className={errors.k ? 'error' : ''}
                         />
+                        {errors.k && <span className="error-message">{errors.k}</span>}
                     </div>
                     <div className="input-container">
                         <label>Ambient Temperature (T∞) [K]</label>
@@ -342,13 +337,25 @@ function IonSourceCalculator() {
                             value={inputValues.T_inf}
                             onChange={handleInputChange}
                             placeholder="e.g., 300"
+                            className={errors.T_inf ? 'error' : ''}
                         />
+                        {errors.T_inf && <span className="error-message">{errors.T_inf}</span>}
                     </div>
                 </div>
 
-                <button className="calculate-button" onClick={calculateTemperatureProfile}>
+                <button 
+                    className="calculate-button" 
+                    onClick={calculateTemperatureProfile}
+                    disabled={Object.values(errors).some(error => error !== null)}
+                >
                     Calculate Temperature Profile
                 </button>
+
+                {calculationError && (
+                    <Alert variant="destructive" className="mt-4">
+                        <AlertDescription>{calculationError}</AlertDescription>
+                    </Alert>
+                )}
 
                 {tipTemperature && (
                     <div className="result-container">
@@ -359,7 +366,10 @@ function IonSourceCalculator() {
                 {temperatureData.length > 0 && (
                     <div className="chart-container">
                         <ResponsiveContainer>
-                            <LineChart data={temperatureData.filter(d => d.x >= 0 && d.x <= 5)} margin={{ top: 20, right: 30, left: 25, bottom: 25 }}>
+                            <LineChart 
+                                data={temperatureData.filter(d => d.x >= 0 && d.x <= 5)} 
+                                margin={{ top: 20, right: 30, left: 25, bottom: 25 }}
+                            >
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis
                                     dataKey="x"
@@ -406,22 +416,6 @@ function IonSourceCalculator() {
                         </ResponsiveContainer>
                     </div>
                 )}
-
-{/*                <div className="model-description">
-                    <h3>Model Description</h3>
-                    <p>
-                        This calculator implements a thermal model for an ion source tip, 
-                        considering Joule heating, evaporative cooling, and ion evaporation effects. 
-                        The temperature profile is calculated using a self-consistent method 
-                        that balances various thermal transfer mechanisms.
-                    </p>
-                    <p>Key components include:</p>
-                    <ul>
-                        <li>Joule heating from electrical current</li>
-                        <li>Evaporative cooling based on molecular dynamics</li>
-                        <li>Ion evaporation thermal effects</li>
-                    </ul>
-                </div>*/}
             </div>
         </div>
     );
