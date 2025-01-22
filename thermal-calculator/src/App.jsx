@@ -393,7 +393,8 @@ return (
                                     dataKey="x"
                                     type="number"
                                     domain={[0, 5]}
-                                    tickFormatter={(value) => value.toFixed(2)}
+                                    ticks={[0, 1, 2, 3, 4, 5]}
+                                    tickFormatter={(value) => value.toFixed(0)}
                                     label={{
                                         value: 'Normalized Position x⋅tan(θ)/r₀',
                                         position: 'insideBottom',

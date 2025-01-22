@@ -7,30 +7,26 @@ body {
     background-color: #f5f7fb;
     font-family: system-ui, -apple-system, sans-serif;
 }
-
 .calculator-container {
-    width: 98vw;  /* Using most of the viewport width */
+    width: 95vw;  /* Using most of the viewport width */
     padding: 2rem;
     background: white;
     border-radius: 16px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
-
 .calculator-container h1 {
     color: #1a237e;
     text-align: center;
     margin-bottom: 2rem;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
 }
-
 .calculator-content {
     display: grid;
-    grid-template-columns: minmax(350px, 450px) minmax(600px, 1fr); /* More space for the graph */
+    grid-template-columns: minmax(400px, 550px) minmax(500px, 1fr);
     gap: 2rem;
     min-height: 600px;
 }
-
 .controls-section {
     display: flex;
     flex-direction: column;
@@ -40,49 +36,42 @@ body {
     border-radius: 12px;
     border: 1px solid #e3e8f4;
 }
-
 .visualization-section {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
-
 .input-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Two columns for inputs */
     gap: 1rem;
 }
-
 .input-container {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
-
 .input-container label {
     font-weight: 600;
     color: #2c3e50;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
 }
-
 .input-container input,
 .input-container select {
     width: calc(100% - 2rem); /* Account for padding */
     padding: 0.75rem 1rem;
     border: 2px solid #e2e8f0;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 1rem;
     transition: all 0.2s ease;
     background: white;
 }
-
 .input-container input:focus,
 .input-container select:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
-
 .calculate-button {
     background-color: #3b82f6;
     color: white;
@@ -93,29 +82,26 @@ body {
     font-weight: 600;
     font-size: 1rem;
     transition: all 0.2s ease;
-    width: 100%;
+    width: 80%;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-top: 1rem;
+    margin: 1rem auto 0 auto;
+    display: block;
 }
-
 .calculate-button:hover {
     background-color: #2563eb;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
-
 .calculate-button:active {
     transform: translateY(0);
 }
-
 .result-container {
     background: #f0f7ff;
     padding: 1.5rem;
     border-radius: 8px;
     border: 1px solid #bde0fe;
 }
-
 .result-container p {
     color: #1e40af;
     font-size: 1.25rem;
@@ -123,7 +109,6 @@ body {
     text-align: center;
     margin: 0;
 }
-
 .chart-container {
     background: white;
     border-radius: 12px;
@@ -132,7 +117,6 @@ body {
     padding: 2rem;
     border: 1px solid #e2e8f0;
 }
-
 .model-description {
     background: #f8fafc;
     padding: 1.5rem;
@@ -140,30 +124,25 @@ body {
     border: 1px solid #e2e8f0;
     margin-top: auto; /* Push to bottom of controls section */
 }
-
 .model-description h2 {
     color: #1e293b;
     margin-bottom: 1rem;
     font-size: 1.5rem;
 }
-
 .model-description p {
     color: #475569;
     line-height: 1.6;
     margin: 0;
 }
-
 /* Responsive adjustments */
 @media (max-width: 1200px) {
     .calculator-content {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-
     .input-grid {
         grid-template-columns: 1fr;
     }
-
     .chart-container {
         height: 400px;
     }
