@@ -218,12 +218,23 @@ function IonSourceCalculator() {
 
     
     const calculateYAxisTicks = (minValue, maxValue) => {
-        console.log('Min value:', minValue);
-        console.log('Max value:', maxValue);
-        console.log('Range:', maxValue - minValue);
+        // Include T_inf in the range
+        const effectiveMin = Math.min(minValue, params.T_inf);
+        const effectiveMax = Math.max(maxValue, params.T_inf);
         
-        const range = maxValue - minValue;
-        const possibleIntervals = [100, 50, 25, 10, 5, 2.5, 1, 0.5, 0.25, 0.1, 0.05, 0.025, 0.01];
+        // Add padding (5% of the range on each side)
+        const totalRange = effectiveMax - effectiveMin;
+        const padding = totalRange * 0.1; // 10% padding
+        
+        const paddedMin = effectiveMin - padding;
+        const paddedMax = effectiveMax + padding;
+        
+        console.log('Padded Min value:', paddedMin);
+        console.log('Padded Max value:', paddedMax);
+        console.log('Range:', paddedMax - paddedMin);
+        
+        const range = paddedMax - paddedMin;
+        const possibleIntervals = [100, 50, 25, 10, 5, 2.5, 1, 0.5, 0.25, 0.1, 0.05, 0.025, 0.01, 0.005, 0.0025, 0.001, 0.0005, 0.00025, 0.0001];
         
         // Find the interval that will give us 4-6 ticks
         let selectedInterval = possibleIntervals[0];
@@ -237,10 +248,9 @@ function IonSourceCalculator() {
             }
         }
 
-        // Extend the range slightly to get nice round numbers
-        const padding = selectedInterval;
-        const lowBound = Math.floor(minValue / selectedInterval) * selectedInterval;
-        const highBound = Math.ceil(maxValue / selectedInterval) * selectedInterval;
+        // Extend the range to get nice round numbers
+        const lowBound = Math.floor(paddedMin / selectedInterval) * selectedInterval;
+        const highBound = Math.ceil(paddedMax / selectedInterval) * selectedInterval;
 
         // Generate ticks
         const ticks = [];
@@ -256,7 +266,10 @@ function IonSourceCalculator() {
                 moreTicks.push(parseFloat(tick.toFixed(6)));
             }
             if (moreTicks.length >= 4 && moreTicks.length <= 6) {
-                return moreTicks;
+                return {
+                    ticks: moreTicks,
+                    domain: [moreTicks[0], moreTicks[moreTicks.length - 1]]
+                };
             }
         }
         
@@ -266,100 +279,115 @@ function IonSourceCalculator() {
         };
     };
 
-    return (
+return (
         <div className="calculator-container">
             <h1>Ion Source Tip Temperature Calculator</h1>
             
             <div className="calculator-content">
-                <div className="input-grid">
+                {/* Left side - Controls */}
+                <div className="controls-section">
+                    <div className="input-grid">
+                        <div className="input-container">
+                            <label>Solvent</label>
+                            <select
+                                value={solvent}
+                                onChange={handleSolventChange}
+                                className="solvent-select"
+                            >
+                                <option value="water">Water</option>
+                                <option value="formamide">Formamide</option>
+                            </select>
+                        </div>
+                        <div className="input-container">
+                            <label>Tip Radius (r₀) [nm]</label>
+                            <input
+                                type="text"
+                                name="r0"
+                                value={inputValues.r0}
+                                onChange={handleInputChange}
+                                placeholder="e.g., 100 or 1e2"
+                            />
+                        </div>
+                        <div className="input-container">
+                            <label>Cone Angle (θ) [degrees]</label>
+                            <input
+                                type="text"
+                                name="theta"
+                                value={inputValues.theta}
+                                onChange={handleInputChange}
+                                placeholder="e.g., 5"
+                            />
+                        </div>
+                        <div className="input-container">
+                            <label>Resistivity (ρ) [Ω·m]</label>
+                            <input
+                                type="text"
+                                name="rho"
+                                value={inputValues.rho}
+                                onChange={handleInputChange}
+                                placeholder="e.g., 0.1 or 1e-1"
+                            />
+                        </div>
+                        <div className="input-container">
+                            <label>Current (I) [A]</label>
+                            <input
+                                type="text"
+                                name="I"
+                                value={inputValues.I}
+                                onChange={handleInputChange}
+                                placeholder="e.g., 1e-8"
+                            />
+                        </div>
+                        <div className="input-container">
+                            <label>Thermal Conductivity (k) [W/(m·K)]</label>
+                            <input
+                                type="text"
+                                name="k"
+                                value={inputValues.k}
+                                onChange={handleInputChange}
+                                placeholder="e.g., 0.75"
+                            />
+                        </div>
+                        <div className="input-container">
+                            <label>Ambient Temperature (T∞) [K]</label>
+                            <input
+                                type="text"
+                                name="T_inf"
+                                value={inputValues.T_inf}
+                                onChange={handleInputChange}
+                                placeholder="e.g., 300"
+                            />
+                        </div>
+                    </div>
 
-                    <div className="input-container">
-                        <label>Solvent</label>
-                        <select
-                            value={solvent}
-                            onChange={handleSolventChange}
-                            className="solvent-select"
-                        >
-                            <option value="water">Water</option>
-                            <option value="formamide">Formamide</option>
-                        </select>
-                    </div>
-                    <div className="input-container">
-                        <label>Tip Radius (r₀) [nm]</label>
-                        <input
-                            type="text"
-                            name="r0"
-                            value={inputValues.r0}
-                            onChange={handleInputChange}
-                            placeholder="e.g., 100 or 1e2"
-                        />
-                    </div>
-                    <div className="input-container">
-                        <label>Cone Angle (θ) [degrees]</label>
-                        <input
-                            type="text"
-                            name="theta"
-                            value={inputValues.theta}
-                            onChange={handleInputChange}
-                            placeholder="e.g., 5"
-                        />
-                    </div>
-                    <div className="input-container">
-                        <label>Resistivity (ρ) [Ω·m]</label>
-                        <input
-                            type="text"
-                            name="rho"
-                            value={inputValues.rho}
-                            onChange={handleInputChange}
-                            placeholder="e.g., 0.1 or 1e-1"
-                        />
-                    </div>
-                    <div className="input-container">
-                        <label>Current (I) [A]</label>
-                        <input
-                            type="text"
-                            name="I"
-                            value={inputValues.I}
-                            onChange={handleInputChange}
-                            placeholder="e.g., 1e-8"
-                        />
-                    </div>
-                    <div className="input-container">
-                        <label>Thermal Conductivity (k) [W/(m·K)]</label>
-                        <input
-                            type="text"
-                            name="k"
-                            value={inputValues.k}
-                            onChange={handleInputChange}
-                            placeholder="e.g., 0.75"
-                        />
-                    </div>
-                    <div className="input-container">
-                        <label>Ambient Temperature (T∞) [K]</label>
-                        <input
-                            type="text"
-                            name="T_inf"
-                            value={inputValues.T_inf}
-                            onChange={handleInputChange}
-                            placeholder="e.g., 300"
-                        />
+                    <button className="calculate-button" onClick={calculateTemperatureProfile}>
+                        Calculate Temperature Profile
+                    </button>
+
+                    <div className="model-description">
+                        <h2>Model Description:</h2>
+                        <p>
+                            This calculator returns the temperature profile for an ion source in vacuum. 
+                            The model considers the effects of solvent evaporative cooling and ion emission (Joule heating and ion evaporative cooling).
+                            For a full description of the model, see Drachman & Stein 2025. 
+                        </p>
                     </div>
                 </div>
 
-                <button className="calculate-button" onClick={calculateTemperatureProfile}>
-                    Calculate Temperature Profile
-                </button>
-
-                {tipTemperature && (
-                    <div className="result-container">
-                        <p>Tip Temperature: {tipTemperature.toFixed(2)} K</p>
-                    </div>
-                )}
+                {/* Right side - Visualization */}
+                <div className="visualization-section">
+                    {tipTemperature && (
+                        <div className="result-container">
+                            <p>Tip Temperature: {tipTemperature.toFixed(2)} K</p>
+                        </div>
+                    )}
 
                 {temperatureData.length > 0 && (
                     <div className="chart-container">
                         <ResponsiveContainer>
-                            <LineChart data={temperatureData.filter(d => d.x >= 0 && d.x <= 5)} margin={{ top: 20, right: 30, left: 25, bottom: 25 }}>
+                            <LineChart 
+                                margin={{ top: 20, right: 30, left: 25, bottom: 25 }}
+                            >
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis
                                     dataKey="x"
@@ -391,37 +419,49 @@ function IonSourceCalculator() {
                                 />
                                 <Tooltip
                                     formatter={(value, name) => [
-                                        value.toFixed(2),
-                                        name === 'temperature' ? 'Temperature (K)' : 'Normalized Position'
+                                        value.toFixed(2) + ' K',
+                                        name
                                     ]}
                                     labelFormatter={(label) => `x·tan(θ)/r₀: ${label.toFixed(2)}`}
                                 />
                                 <Line
+                                    data={temperatureData.filter(d => d.x >= 0 && d.x <= 5)}
                                     type="monotone"
                                     dataKey="temperature"
                                     stroke="#8884d8"
+                                    strokeWidth={3}
                                     dot={false}
+                                    name="Temperature"
+                                />
+                                <Line
+                                    data={[
+                                        { x: 0, ref_temperature: params.T_inf },
+                                        { x: 5, ref_temperature: params.T_inf }
+                                    ]}
+                                    type="monotone"
+                                    dataKey="ref_temperature"
+                                    stroke="#000000"
+                                    strokeWidth={2}
+                                    strokeOpacity={0.5}
+                                    dot={false}
+                                    name="Ambient Temperature"
+                                    // hide={true}  // Hide from tooltip
                                 />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
                 )}
 
+
 {/*                <div className="model-description">
-                    <h3>Model Description</h3>
+                    <h2>Model Description:</h2>
                     <p>
-                        This calculator implements a thermal model for an ion source tip, 
-                        considering Joule heating, evaporative cooling, and ion evaporation effects. 
-                        The temperature profile is calculated using a self-consistent method 
-                        that balances various thermal transfer mechanisms.
+                        This calculator returns the temperature profile for an ion source in vacuum. 
+                        The model considers the effects of solvent evaporative cooling and ion emission (Joule heating and ion evaporative cooling).
+                        For a full description of the model, see Drachman & Stein 2025. 
                     </p>
-                    <p>Key components include:</p>
-                    <ul>
-                        <li>Joule heating from electrical current</li>
-                        <li>Evaporative cooling based on molecular dynamics</li>
-                        <li>Ion evaporation thermal effects</li>
-                    </ul>
                 </div>*/}
+                </div>
             </div>
         </div>
     );
