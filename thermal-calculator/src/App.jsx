@@ -20,8 +20,15 @@ const CONSTANTS = {
         A: 7.585,
         B: 3881.3,
         C: 27.66,
-        Hv: 1.16e-19,  // Enthalpy of vaporization (J)
+        Hv: 8.42e-20,  // Enthalpy of vaporization (J)
         m_w: 7.5e-26,  // Molecular mass (kg)
+    },
+    ACETONITRILE: {
+        A: 4.27873,
+        B: 1355.374,
+        C: -37.853,
+        Hv: 7.05e-20,  // Enthalpy of vaporization (J)
+        m_w: 4.1e-26,  // Molecular mass (kg)
     },
     Gdag: 0.8e-19,     // Ion evaporation activation energy (J)
     alpha: 1.5,        // Evaporation coefficient
@@ -100,7 +107,12 @@ function IonSourceCalculator() {
             );
 
             // Get solvent parameters
-            const solventParams = solvent === 'water' ? CONSTANTS.WATER : CONSTANTS.FORMAMIDE;
+            const solventParams = 
+                solvent === 'water' ? CONSTANTS.WATER : 
+                solvent === 'formamide' ? CONSTANTS.FORMAMIDE : 
+                solvent === 'acetonitrile' ? CONSTANTS.ACETONITRILE :
+                CONSTANTS.WATER;  // default case if somehow none match
+
             const { A, B, C, Hv, m_w } = solventParams;
             const { Gdag, alpha, k_B, qe } = CONSTANTS;
 
@@ -110,11 +122,12 @@ function IonSourceCalculator() {
             const temperatures = Tbc1.map(Ttip => {
                 // Evaporation rate term
                 const Qdot_evap = alpha * Math.PI * r0_meters**2 * Hv * 
-                    (solvent === 'water' ? 
-                        Math.pow(10, A - B / (Ttip + C)) :      // if water
-                        1e5 * Math.pow(10, A - B / (Ttip + C))) // if formamide, multiply by 1e5
-                    / Math.sqrt(2 * Math.PI * m_w * k_B * Ttip);
-
+                (solvent === 'water' ? 
+                    Math.pow(10, A - B / (Ttip + C)) :      // if water
+                    solvent === 'formamide' ?
+                    1e5 * Math.pow(10, A - B / (Ttip + C)) : // if formamide
+                    1e5 * Math.pow(10, A - B / (Ttip + C)))      // if acetonitrile
+                / Math.sqrt(2 * Math.PI * m_w * k_B * Ttip);
                 // Joule heating term
                 const JouleTerm = I**2 * rho / (k * Math.PI**2 * Math.tan(thetaRad)**2) * 
                     (1 / (r0_meters * (r0_meters + x * Math.tan(thetaRad))) - 
@@ -153,7 +166,9 @@ function IonSourceCalculator() {
             const Qdot_evap = alpha * Math.PI * r0_meters**2 * Hv * 
                 (solvent === 'water' ? 
                     Math.pow(10, A - B / (Ttip + C)) :      // if water
-                    1e5 * Math.pow(10, A - B / (Ttip + C))) // if formamide
+                    solvent === 'formamide' ?
+                    1e5 * Math.pow(10, A - B / (Ttip + C)) : // if formamide
+                    1e5 * Math.pow(10, A - B / (Ttip + C)))      // if acetonitrile
                 / Math.sqrt(2 * Math.PI * m_w * k_B * Ttip);
 
             const JouleTerm = I**2 * rho / (k * Math.PI**2 * Math.tan(thetaRad)**2) * 
@@ -188,14 +203,22 @@ function IonSourceCalculator() {
 
         const temperatureProfile = x.map(xi => {
             // Get solvent parameters again
-            const solventParams = solvent === 'water' ? CONSTANTS.WATER : CONSTANTS.FORMAMIDE;
+            const solventParams = 
+                solvent === 'water' ? CONSTANTS.WATER : 
+                solvent === 'formamide' ? CONSTANTS.FORMAMIDE : 
+                solvent === 'acetonitrile' ? CONSTANTS.ACETONITRILE :
+                CONSTANTS.WATER;  // default case if somehow none match
+
             const { A, B, C, Hv, m_w } = solventParams;
             const { Gdag, alpha, k_B, qe } = CONSTANTS;
 
-            const Qdot_evap = alpha * Math.PI * r0_meters**2 * Hv * 
-                (solvent === 'water' ? 
-                    Math.pow(10, A - B / (Ttip + C)) :
-                    1e5 * Math.pow(10, A - B / (Ttip + C))) /
+            // Calculate vapor pressure term based on solvent
+            const vaporPressure = 
+                solvent === 'water' ? Math.pow(10, A - B / (Ttip + C)) :      // if water
+                solvent === 'formamide' ? 1e5 * Math.pow(10, A - B / (Ttip + C)) : // if formamide
+                1e5 * Math.pow(10, A - B / (Ttip + C));     // if acetonitrile
+
+            const Qdot_evap = alpha * Math.PI * r0_meters**2 * Hv * vaporPressure / 
                 Math.sqrt(2 * Math.PI * m_w * k_B * Ttip);
 
             const JouleTerm = I**2 * rho / (k * Math.PI**2 * Math.tan(thetaRad)**2) * 
@@ -296,6 +319,7 @@ return (
                             >
                                 <option value="water">Water</option>
                                 <option value="formamide">Formamide</option>
+                                <option value="acetonitrile">Acetonitrile</option>
                             </select>
                         </div>
                         <div className="input-container">
