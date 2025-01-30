@@ -410,7 +410,7 @@ return (
                     <div className="chart-container">
                         <ResponsiveContainer>
                             <LineChart 
-                                margin={{ top: 20, right: 30, left: 25, bottom: 25 }}
+                                margin={{ top: 20, right: 30, left: 50, bottom: 25 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis
@@ -419,10 +419,13 @@ return (
                                     domain={[0, 5]}
                                     ticks={[0, 1, 2, 3, 4, 5]}
                                     tickFormatter={(value) => value.toFixed(0)}
+                                    tickSize={-6}
+                                    tick={{ fontSize: 12, dy: 10 }}
                                     label={{
-                                        value: 'Normalized Position x⋅tan(θ)/r₀',
+                                        value: 'Normalized Position (x⋅tan(θ)/r₀)',
                                         position: 'insideBottom',
-                                        offset: -15
+                                        offset: -15,
+                                        fontsize: 24
                                     }}
                                 />
                                 <YAxis
@@ -435,11 +438,15 @@ return (
                                         Math.max(...temperatureData.map(d => d.temperature))
                                     ).domain}
                                     tickFormatter={(value) => value.toFixed(2)}
+                                    tickSize={-6}
+                                    tick={{ fontSize: 12, dx: -9 }}
                                     label={{
                                         value: 'Temperature (K)',
                                         angle: -90,
                                         position: 'insideLeft',
-                                        offset: -15
+                                        offset: -30,
+                                        dy: 70,
+                                        fontsize: 24
                                     }}
                                 />
                                 <Tooltip
@@ -453,7 +460,7 @@ return (
                                     data={temperatureData.filter(d => d.x >= 0 && d.x <= 5)}
                                     type="monotone"
                                     dataKey="temperature"
-                                    stroke="#8884d8"
+                                    stroke="#8B1C24"
                                     strokeWidth={3}
                                     dot={false}
                                     name="Temperature"
@@ -465,7 +472,7 @@ return (
                                     ]}
                                     type="monotone"
                                     dataKey="ref_temperature"
-                                    stroke="#000000"
+                                    stroke="#4A4A4A"
                                     strokeWidth={2}
                                     strokeOpacity={0.5}
                                     dot={false}

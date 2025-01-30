@@ -8,7 +8,7 @@ body {
     margin: 0;
     padding: 1rem;
     background-color: #f8fafc;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 /*    background-color: #f5f7fb;
     font-family: system-ui, -apple-system, sans-serif;
@@ -24,7 +24,7 @@ body {
 }
 .calculator-container h1 {
     color: #1a365d;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
 /*    color: #1a237e;*/
     text-align: center;
@@ -93,7 +93,7 @@ body {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 .calculate-button {
-    font-family: 'JetBrains Mono', monospace;
+
     background-color: #2C3E50;
     transition: all 0.2s ease;
 /*    background-color: #3b82f6;*/
@@ -186,7 +186,7 @@ body {
 
 .recharts-text {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 16px;
+    font-size: 14px;
     color: black;
 }
 
