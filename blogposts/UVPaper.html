@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractals in the Complex Plane - Nick Drachman</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon.png">
+    <link rel="stylesheet" href="../styles.css">
+       <!-- Load MathJax from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                displayMath: [['$$','$$'], ['\\[','\\]']],
+                processEscapes: true
+            }
+        });
+    </script>
+</head>
+<body>
+    <header class="header">
+        <span class="header-name">Nick Drachman</span>
+        <nav class="nav-menu">
+            <a href="../index.html">About Me</a>
+            <a href="../research.html">Research</a>
+            <a href="../blog.html">Blog</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="blog-post">
+            <div class="post-header">
+                <h1>Deep UV Peptide Photolysis Paper Published in the Journal of Chemical Physics</h1>
+                <p class="post-date">June 18, 2025</p>
+            </div>
+
+            <div class="post-content">
+                <p>I'm thrilled to share the publication of my most recent <a href="https://pubs.aip.org/aip/jcp/article/162/16/165104/3345211">paper</a> on the ultraviolet photolysis of the peptide bond at 222 and 193 nm. This work was carried out both at Brown under the supervision of my PhD advisor Dr. Derek Stein, as well as at NIST in collaboration with Greg Cooksey, Sujitra Pookpanratana, and Rob Vest. 
+                    This work addresses a critical gap in the literature on the ability of peptides and proteins to withstand deep UV radiation, which has important ramifications for several fields of science including protein sequencing, UV disinfection, and even the origins of life itself! 
+                    We were particularly motivated to undertake this project by our goal to develop a single molecule protein sequencing technique using <a href="https://www.nature.com/articles/s41467-024-51455-x">nanopore mass spectrometry</a>, in which peptides are first broken apart into their constituent amino acids using UV light and then identified by mass spectrometry. </p>
+
+                <p>Traditionally, UV photodissociation (UVPD) is performed on peptide ions in vacuum inside a mass spectrometer, but here we demonstrate that the same types of fragmentation events can occur in aqueous solution before ionization.
+                    This is important because it opens up the possibility of performing UVPD on peptides and proteins in their native environment, which could lead to more efficient and effective sequencing methods. 
+                    In our experiments, we irradiated aqueous solutions of the simplest dipeptide, gly-gly, with either 222 nm or 193 nm UV light. 
+                    We then measured the changes in the UV absorption spectrum of the solution as a function of irradiation time to quantify the rate of peptide bond breakage. 
+                    The figure below shows oon of our experimental setups as well as representative UV absorption spectra of gly-gly following different durations of UV irradiation, illustrating the decrease in absorption associated with peptide bond scission.
+                </p>
+
+                <div class="research-image-container">
+                    <img src="../images/UVPaper_figure.webp" class="research-content-image" alt="UV absorption spectra of gly-gly dipeptide following UV irradiation">
+                    <p class="image-caption">(a) UV laser irradiation setup. An IR laser is frequency quadrupled to generate the UV light, which is then directed through the sample within a purged enclosure. (b) UV absorption spectra of gly-gly dipeptide following different durations of UV irradiation. The decreased absorption is indicative of peptide bond scission.</p>
+                </div>
+
+
+                <p>We found that irradiation at 193 nm produced peptide bond cleavage with a quantum yield of approximately 1.5%, while 222 nm light produced a yield of 0.16%—an order of magnitude smaller but still measurable. 
+                    These results show that single-photon peptide bond scission can occur in solution, supporting the feasibility of performing light-induced fragmentation inside liquid-phase ion sources for single-molecule protein sequencing.
+                    Beyond our envisioned protein sequencing applications, the results also have implications for a wide range of fields. Perhaps most interestingly, we analyzed the effect that deep UV photolysis could have had on prebiotic chemistry on early Earth. 
+                    Based on predictions of the UV surface environment of early Earth, we estimated that dipeptides exposed to 193 nm UV light could have undergone photolysis on timescales of just a few days, suggesting that deep UV radiation may have played a significant role in shaping the prebiotic peptide landscape.
+                </p>
+                
+
+                <p>This work was a collaboration between the Stein lab at Brown University and the Physical Measurement Laboratory (PML) at NIST. The paper, titled "Photolysis of the peptide bond at 193 and 222 nm" appears in the Journal of Chemical Physics and can be accessed <a href="https://pubs.aip.org/aip/jcp/article/162/16/165104/3345211">here</a>.</p> 
+            </div>
+        </div>
+    </div>
+</body>
+</html>
